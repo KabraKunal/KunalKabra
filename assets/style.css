@@ -73,6 +73,25 @@ a:hover{ text-decoration:underline; }
   max-width: var(--max);
 }
 
+.avatar {
+  width: 100%;
+  max-width: 220px;        /* controls visible size */
+  aspect-ratio: 1 / 1;    /* keeps it square */
+  border-radius: 5px;
+  overflow: hidden;       /* CRITICAL: crops big images */
+  background: #f3f3f3;
+  margin-bottom: 12px;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;      /* CRITICAL: fits big images */
+  object-position: center;
+  display: block;
+}
+
+
 .hero{
   display:flex;
   align-items:flex-start;
@@ -97,7 +116,7 @@ a:hover{ text-decoration:underline; }
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 14px;
+  padding: 10px;
 }
 .hero .card .avatar{
   width:100%;
