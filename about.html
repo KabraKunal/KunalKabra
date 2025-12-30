@@ -3,105 +3,105 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Your Name — Home</title>
-  <meta name="description" content="Personal website: essays, projects, reading list, and notes." />
+  <title>Kunal Kabra — About</title>
   <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="assets/style.css" />
+  <script>
+    (function() {
+      const theme = localStorage.getItem('theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
 </head>
 <body>
   <div class="container">
     <header class="header">
-      <a class="brand" href="index.html" aria-label="Home">
-        <img src="assets/logo.svg" alt="Logo" />
+      <a class="brand" href="index.html">
+        <img class="logo-light" src="assets/Light Logo.svg" alt="Logo" />
+        <img class="logo-dark" src="assets/Dark Logo.svg" alt="Logo" />
         <div>
           <div class="name">Kunal Kabra</div>
-          <div class="tagline">Builder • Writing about business, tech, India, ideas</div>
+          <div class="tagline">About</div>
         </div>
       </a>
-      <div></div>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme">
+        <div class="toggle-track">
+          <svg class="track-icon track-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="track-icon track-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </div>
+        <div class="toggle-thumb">
+          <svg class="toggle-icon icon-sun" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+            <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+            <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+            <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+          </svg>
+          <svg class="toggle-icon icon-moon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </div>
+      </button>
     </header>
 
     <div class="main">
       <main class="content">
-        <section class="hero">
-          <div>
-            <h1>Hi, I’m Kunal Kabra.</h1>
-            <p>
-              I’m building things and writing in public.
-              This is my home for essays, learning notes, side projects, and reading.
-            </p>
+        <h1 style="margin:0 0 14px; font-size:36px; letter-spacing:-0.03em;">About me</h1>
+        <p class="muted">
+          Write this like a founder: what you're building, what you believe, what you've done, and what you're curious about.
+        </p>
 
-            <div class="section">
-              <h2>Start here</h2>
-              <ul class="list">
-                <li>
-                  <a href="essays/index.html"><strong>Essays</strong></a>
-                  <div class="meta">Business & strategy • Technology • India & manufacturing • Philosophy</div>
-                </li>
-                <li>
-                  <a href="projects.html"><strong>Problems & side projects</strong></a>
-                  <div class="meta">What I’m exploring + what I’m building</div>
-                </li>
-                <li>
-                  <a href="reading.html"><strong>Reading & resources</strong></a>
-                  <div class="meta">Books, papers, links, and my highlights</div>
-                </li>
-              </ul>
-            </div>
+        <div class="section">
+          <h2>One-liner</h2>
+          <p>I build <em>___</em> and write about <em>___</em>.</p>
+        </div>
 
-            <hr class="sep" />
+        <div class="section">
+          <h2>What I'm interested in</h2>
+          <ul>
+            <li><strong>Business & Strategy:</strong> competition, distribution, pricing, moats</li>
+            <li><strong>Technology:</strong> AI tooling, product engineering, systems</li>
+            <li><strong>India & Manufacturing:</strong> supply chains, policy, scaling execution</li>
+            <li><strong>Philosophical Ideas:</strong> meaning, agency, rationality, craft</li>
+          </ul>
+        </div>
 
-            <section class="section">
-              <h2>Now</h2>
-              <p class="muted">
-                Example "now" section:
-              </p>
-              <ul>
-                <li>Exploring: India manufacturing + automation + incentives</li>
-                <li>Building: a small tool for ___</li>
-                <li>Writing: 1 essay / week on strategy and execution</li>
-              </ul>
-            </section>
+        <div class="section">
+          <h2>Short bio</h2>
+          <p>
+            Add a compact paragraph: where you're based, what you work on, and what you've done before.
+            Keep it concrete.
+          </p>
+        </div>
 
-            <section class="section newsletter">
-              <h3>Newsletter</h3>
-              <p class="muted">
-                Monthly email on what I'm learning and building. No spam.
-              </p>
+        <div class="section">
+          <h2>Elsewhere</h2>
+          <ul>
+            <li><a href="https://www.linkedin.com/in/kunal-kabra" target="_blank" rel="noopener">LinkedIn</a></li>
+            <li><a href="#" target="_blank" rel="noopener">GitHub</a></li>
+            <li><a href="#" target="_blank" rel="noopener">Instagram</a></li>
+          </ul>
+        </div>
 
-              <div class="row" style="gap:10px; align-items:center; flex-wrap:wrap;">
-                <a class="btn" href="https://kunalkabra.substack.com" target="_blank" rel="noopener" style="font-size:14px;">
-                  Subscribe on Substack →
-                </a>
-                <span class="muted" style="font-size:12px;">Free • unsubscribe anytime</span>
-              </div>
-            </section>
-
-            <section class="footer">
-              <div>
-                Contact: <a href="mailto:kunal.kabra.iitb@gmail.com">kunal.kabra.iitb@gmail.com</a> •
-                <a href="#" target="_blank" rel="https://www.linkedin.com/in/kunal-kabra" rel="noopener">LinkedIn</a> •
-                <a href="#" target="_blank" rel="noopener">GitHub</a>
-              </div>
-              <div style="margin-top:8px">
-                <code>Last updated:</code> <span class="muted">replace with date</span>
-              </div>
-            </section>
-          </div>
-
-          <aside class="card" aria-label="Profile card">
-            <div class="avatar">
-              <img
-              src="assets/portrait.jpg"
-              alt="Portrait of Kunal Kabra"
-              loading="lazy"
-              />
-            </div>
-            <div class="mini">
-              <strong>Currently:</strong> Mumbai, India<br/>
-              <strong>Focus:</strong> Building, writing, learning
-            </div>
-          </aside>
+        <section class="footer">
+          <div>Contact: <a href="mailto:kunal.kabra.iitb@gmail.com">kunal.kabra.iitb@gmail.com</a></div>
         </section>
       </main>
 
@@ -111,7 +111,7 @@
           <ul class="nav">
             <li><a href="index.html">Home</a></li>
             <li><a href="about.html">About me</a></li>
-            <li><a href="https://kunalkabra.substack.com" target="_blank" rel="noopener">Essays / Articles</a></li>
+            <li><a href="essays/index.html">Essays / Articles</a></li>
             <li><a href="projects.html">Problems & projects</a></li>
             <li><a href="reading.html">Reading & resources</a></li>
             <li class="sub"><a href="essays/learning-notes.html">Learning notes</a></li>
@@ -119,6 +119,15 @@
         </nav>
       </aside>
     </div>
+  </div>
+
+  <!-- View Counter -->
+  <div class="view-counter">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+      <circle cx="12" cy="12" r="3"></circle>
+    </svg>
+    <span id="view-count">---</span> views
   </div>
 
   <script src="assets/script.js"></script>

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>The Last-Mile Problem in Indian Manufacturing — Kunal Kabra</title>
+  <meta name="description" content="Why factories struggle with the final 20% of execution, and what it would take to close the gap." />
+  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../assets/style.css" />
+  <script>
+    (function() {
+      const theme = localStorage.getItem('theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <a class="brand" href="../index.html">
+        <img class="logo-light" src="../assets/Light Logo.svg" alt="Logo" />
+        <img class="logo-dark" src="../assets/Dark Logo.svg" alt="Logo" />
+        <div>
+          <div class="name">Kunal Kabra</div>
+          <div class="tagline">Essay</div>
+        </div>
+      </a>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme">
+        <div class="toggle-track">
+          <svg class="track-icon track-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="track-icon track-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </div>
+        <div class="toggle-thumb">
+          <svg class="toggle-icon icon-sun" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+            <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+            <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+            <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+          </svg>
+          <svg class="toggle-icon icon-moon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </div>
+      </button>
+    </header>
+
+    <div class="main">
+      <main class="content essay-content">
+        <h1>The Last-Mile Problem in Indian Manufacturing</h1>
+        <div class="essay-meta">
+          <span class="essay-date">2024-12-15</span>
+          <span class="essay-tags">
+            <span class="essay-tag manufacturing">manufacturing</span>
+          </span>
+        </div>
+
+        <p>
+          India has factories. Good ones, even. We have skilled labor, competitive wages, and an increasingly sophisticated supply chain. On paper, we should be a manufacturing powerhouse.
+        </p>
+
+        <p>
+          And yet.
+        </p>
+
+        <p>
+          Walk into most Indian factories and you'll see the same pattern: the first 80% of the process works well. Raw materials come in, machines run, products get made. But somewhere in that final 20%—quality control, packaging, logistics, documentation—things fall apart.
+        </p>
+
+        <h2>Where Things Break Down</h2>
+
+        <p>
+          The last-mile problem in manufacturing isn't about capability. It's about consistency. The same factory that produces perfect output on Monday might ship defective products on Friday. The same line that hits 98% yield in the morning might drop to 85% by evening.
+        </p>
+
+        <p>
+          The root causes are mundane but persistent:
+        </p>
+
+        <ul>
+          <li><strong>Information gaps:</strong> Shop floor workers don't have visibility into downstream requirements. Quality specs exist on paper but don't translate into actionable checks.</li>
+          <li><strong>Incentive misalignment:</strong> Production teams are measured on output volume, not output quality. Speed trumps precision.</li>
+          <li><strong>Skill variation:</strong> Tribal knowledge isn't documented. When experienced workers leave, institutional memory goes with them.</li>
+          <li><strong>Technology mismatch:</strong> Enterprise software designed for German factories doesn't fit Indian workflows. Local solutions are fragmented.</li>
+        </ul>
+
+        <h2>The Cost of 80% Excellence</h2>
+
+        <p>
+          This isn't just an operational problem—it's an economic one. The gap between 80% and 100% execution is where margins live.
+        </p>
+
+        <p>
+          Consider what happens when a shipment gets rejected:
+        </p>
+
+        <ul>
+          <li>Rework costs eat into already-thin margins</li>
+          <li>Delayed deliveries damage customer relationships</li>
+          <li>Reputation effects make it harder to win future orders</li>
+          <li>The factory gets stuck in a low-trust, low-margin equilibrium</li>
+        </ul>
+
+        <p>
+          Meanwhile, competitors in China and Vietnam are executing at 95%+. They're not more innovative. They're just more consistent.
+        </p>
+
+        <h2>What Would It Take?</h2>
+
+        <p>
+          Closing the last-mile gap requires a different approach than scaling the first 80%. It's not about buying more machines or hiring more workers. It's about:
+        </p>
+
+        <ul>
+          <li><strong>Real-time visibility:</strong> Every step of the process needs to be tracked and visible. Not in an ERP system that managers check weekly, but on the shop floor in real-time.</li>
+          <li><strong>Tight feedback loops:</strong> When something goes wrong, the person who can fix it needs to know immediately—not at the end of the shift, not in a weekly review.</li>
+          <li><strong>Standardized workflows:</strong> Best practices need to be documented, trained, and enforced. Consistency requires systems, not just skilled individuals.</li>
+          <li><strong>Aligned incentives:</strong> Quality metrics need to matter as much as quantity metrics. This is a management problem, not a technology problem.</li>
+        </ul>
+
+        <blockquote>
+          <p>The last mile isn't about capability. It's about discipline. And discipline is built through systems.</p>
+        </blockquote>
+
+        <h2>The Opportunity</h2>
+
+        <p>
+          This is where India's manufacturing story will be written. Not in building more factories, but in making existing factories execute at world-class levels.
+        </p>
+
+        <p>
+          The companies that figure this out—whether they're building software, providing services, or running factories—will capture enormous value. Because the gap between 80% and 95% execution isn't 15 percentage points. It's the difference between being a low-margin supplier and being a strategic partner.
+        </p>
+
+        <p>
+          India has the talent. We have the scale. What we need is the last-mile infrastructure—both technological and organizational—to turn potential into performance.
+        </p>
+
+        <!-- Newsletter CTA -->
+        <div class="newsletter-cta">
+          <h3>Enjoyed this essay?</h3>
+          <p>Get new essays delivered to your inbox. No spam, unsubscribe anytime.</p>
+          <form class="subscribe-form" action="https://kunalkabra.substack.com/subscribe" method="get" target="_blank">
+            <input type="email" name="email" placeholder="your@email.com" required />
+            <button type="submit" class="subscribe-btn">Subscribe</button>
+          </form>
+          <div class="substack-link">Powered by <a href="https://kunalkabra.substack.com" target="_blank" rel="noopener">Substack</a></div>
+        </div>
+
+        <section class="footer">
+          <div><a href="index.html">← All essays</a></div>
+        </section>
+      </main>
+
+      <aside class="sidebar">
+        <nav class="navbox" aria-label="Site navigation">
+          <div class="navtitle">Navigation</div>
+          <ul class="nav">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../about.html">About me</a></li>
+            <li><a href="index.html">Essays / Articles</a></li>
+            <li><a href="../projects.html">Problems & projects</a></li>
+            <li><a href="../reading.html">Reading & resources</a></li>
+            <li class="sub"><a href="learning-notes.html">Learning notes</a></li>
+          </ul>
+        </nav>
+      </aside>
+    </div>
+  </div>
+
+  <!-- View Counter -->
+  <div class="view-counter">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+      <circle cx="12" cy="12" r="3"></circle>
+    </svg>
+    <span id="view-count">---</span> views
+  </div>
+
+  <script src="../assets/script.js"></script>
+</body>
+</html>
