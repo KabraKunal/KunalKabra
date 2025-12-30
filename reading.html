@@ -127,5 +127,19 @@
   </div>
 
   <script src="assets/script.js"></script>
+  <!-- GoatCounter Analytics -->
+  <script data-goatcounter="https://kunalkabra.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  <script>
+    (function() {
+      var countEl = document.getElementById('view-count');
+      if (!countEl) return;
+      fetch('https://kunalkabra.goatcounter.com/counter/TOTAL.json')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data && data.count) countEl.textContent = parseInt(data.count).toLocaleString();
+        })
+        .catch(function() {});
+    })();
+  </script>
 </body>
 </html>
