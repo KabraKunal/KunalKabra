@@ -122,6 +122,29 @@
     </div>
   </div>
 
+  <!-- View Counter -->
+  <div class="view-counter">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+      <circle cx="12" cy="12" r="3"></circle>
+    </svg>
+    <span id="view-count">---</span> views
+  </div>
+
   <script src="assets/script.js"></script>
+  <!-- GoatCounter Analytics -->
+  <script data-goatcounter="https://kunalkabra.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  <script>
+    (function() {
+      var countEl = document.getElementById('view-count');
+      if (!countEl) return;
+      fetch('https://kunalkabra.goatcounter.com/counter/TOTAL.json')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data && data.count) countEl.textContent = parseInt(data.count).toLocaleString();
+        })
+        .catch(function() {});
+    })();
+  </script>
 </body>
 </html>
