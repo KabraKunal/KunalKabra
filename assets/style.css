@@ -101,6 +101,23 @@ a:hover{ text-decoration:underline; }
   margin-top: -2px;
 }
 
+/* Header responsive fix for long taglines */
+@media (max-width: 540px) {
+  .header {
+    gap: 12px;
+  }
+  .brand {
+    min-width: 0;
+    flex: 1;
+  }
+  .brand .tagline {
+    font-size: 11px;
+  }
+  .theme-toggle {
+    flex-shrink: 0;
+  }
+}
+
 .main{
   display:grid;
   grid-template-columns: 1fr var(--sidebar);
