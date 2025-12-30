@@ -72,4 +72,24 @@
       form.reset();
     });
   }
+
+  // Simple view counter (localStorage-based for demo)
+  // For production, use GoatCounter, Plausible, or a custom backend
+  const viewCountEl = document.getElementById('view-count');
+  if (viewCountEl) {
+    const storageKey = 'site_views';
+    const sessionKey = 'session_counted';
+
+    let views = parseInt(localStorage.getItem(storageKey) || '0', 10);
+
+    // Only count once per session
+    if (!sessionStorage.getItem(sessionKey)) {
+      views++;
+      localStorage.setItem(storageKey, views.toString());
+      sessionStorage.setItem(sessionKey, 'true');
+    }
+
+    // Format number with commas
+    viewCountEl.textContent = views.toLocaleString();
+  }
 })();
