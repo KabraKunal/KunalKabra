@@ -1,6 +1,9 @@
 :root{
   --bg:#ffffff;
+  --bg-secondary:#fafafa;
+  --bg-card:#fafafa;
   --text:#111;
+  --text-secondary:#1f1f1f;
   --muted:#555;
   --link:#1a59ff;
   --border:#eaeaea;
@@ -10,6 +13,19 @@
   --shadow: 0 10px 30px rgba(0,0,0,.06);
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+}
+
+/* Dark mode */
+html.dark{
+  --bg:#121212;
+  --bg-secondary:#1e1e1e;
+  --bg-card:#1e1e1e;
+  --text:#e4e4e4;
+  --text-secondary:#d0d0d0;
+  --muted:#9a9a9a;
+  --link:#6b9fff;
+  --border:#333;
+  --shadow: 0 10px 30px rgba(0,0,0,.3);
 }
 
 *{ box-sizing:border-box; }
@@ -79,7 +95,7 @@ a:hover{ text-decoration:underline; }
   aspect-ratio: 1 / 1;    /* keeps it square */
   border-radius: 5px;
   overflow: hidden;       /* CRITICAL: crops big images */
-  background: #f3f3f3;
+  background: var(--bg-secondary);
   margin-bottom: 12px;
 }
 
@@ -112,7 +128,7 @@ a:hover{ text-decoration:underline; }
 }
 .hero .card{
   width: 220px;
-  background:#fafafa;
+  background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -122,7 +138,7 @@ a:hover{ text-decoration:underline; }
   width:100%;
   aspect-ratio: 1 / 1;
   border-radius: 12px;
-  background: linear-gradient(135deg, #f0f0f0, #fafafa);
+  background: var(--bg-secondary);
   border: 1px solid var(--border);
   display:flex;
   align-items:center;
@@ -131,7 +147,7 @@ a:hover{ text-decoration:underline; }
 }
 .hero .card .avatar span{
   font-family: var(--mono);
-  color:#777;
+  color: var(--muted);
   font-size: 12px;
 }
 .hero .card .mini{
@@ -190,13 +206,13 @@ hr.sep{
   font-size: 12px;
   border-radius: 999px;
   border: 1px solid var(--border);
-  background: #fafafa;
-  color: #333;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
 }
 .badge code{
   font-family: var(--mono);
   font-size: 11px;
-  color: #666;
+  color: var(--muted);
 }
 
 /* Right sidebar navigation (Patrick Collison-ish) */
@@ -225,7 +241,7 @@ hr.sep{
 .nav a{
   display:inline-block;
   font-size: 14px;
-  color: #1f1f1f;
+  color: var(--text-secondary);
 }
 .nav a.active{
   font-weight: 700;
@@ -238,7 +254,7 @@ hr.sep{
 }
 .nav .sub a{
   font-size: 13px;
-  color: #333;
+  color: var(--text-secondary);
 }
 
 .footer{
@@ -254,7 +270,7 @@ hr.sep{
 /* Newsletter box */
 .newsletter{
   border:1px solid var(--border);
-  background:#fafafa;
+  background: var(--bg-secondary);
   border-radius: var(--radius);
   padding: 14px;
 }
@@ -276,6 +292,8 @@ hr.sep{
   padding: 10px 12px;
   border-radius: 10px;
   border:1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
   font-size: 14px;
   outline:none;
 }
@@ -283,11 +301,60 @@ hr.sep{
   padding: 10px 12px;
   border-radius: 10px;
   border:1px solid var(--border);
-  background:#fff;
+  background: var(--bg);
+  color: var(--text);
   cursor:pointer;
   font-weight: 600;
 }
-.newsletter button:hover{ background:#f5f5f5; }
+.newsletter button:hover{ background: var(--bg-secondary); }
+
+/* Dark mode toggle */
+.theme-toggle{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.theme-toggle:hover{
+  background: var(--bg-secondary);
+}
+.theme-toggle svg{
+  width: 20px;
+  height: 20px;
+  fill: var(--text);
+  transition: fill 0.2s;
+}
+/* Hide moon in light mode, sun in dark mode */
+.theme-toggle .icon-moon{ display: block; }
+.theme-toggle .icon-sun{ display: none; }
+html.dark .theme-toggle .icon-moon{ display: none; }
+html.dark .theme-toggle .icon-sun{ display: block; }
+
+/* View counter */
+.view-counter{
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  box-shadow: var(--shadow);
+  z-index: 100;
+}
+.view-counter span{
+  color: var(--text);
+  font-weight: 600;
+}
 
 /* Responsive */
 @media (max-width: 940px){
@@ -306,4 +373,10 @@ hr.sep{
   }
   .hero{ flex-direction: column; }
   .hero .card{ width: min(320px, 100%); }
+  .view-counter{
+    bottom: 10px;
+    right: 10px;
+    padding: 6px 10px;
+    font-size: 11px;
+  }
 }
