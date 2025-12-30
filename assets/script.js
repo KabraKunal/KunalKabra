@@ -1,4 +1,52 @@
 (function () {
+  // Theme toggle functionality
+  const themeToggle = document.getElementById('theme-toggle');
+  const html = document.documentElement;
+
+  // Get saved theme or detect system preference
+  function getPreferredTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      return savedTheme;
+    }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  // Apply theme to document
+  function setTheme(theme) {
+    html.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+
+    // Update toggle button visual state
+    if (themeToggle) {
+      if (theme === 'dark') {
+        themeToggle.classList.add('dark');
+      } else {
+        themeToggle.classList.remove('dark');
+      }
+    }
+  }
+
+  // Initialize theme on page load
+  setTheme(getPreferredTheme());
+
+  // Toggle theme on button click
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      setTheme(newTheme);
+    });
+  }
+
+  // Listen for system theme changes
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    // Only auto-switch if user hasn't manually set a preference
+    if (!localStorage.getItem('theme')) {
+      setTheme(e.matches ? 'dark' : 'light');
+    }
+  });
+
   // Highlight current nav link based on path
   const path = window.location.pathname.replace(/\/+$/, "");
   const links = document.querySelectorAll(".nav a");

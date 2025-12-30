@@ -4,12 +4,37 @@
   --muted:#555;
   --link:#1a59ff;
   --border:#eaeaea;
+  --card-bg:#fafafa;
   --max: 860px;
   --sidebar: 220px;
   --radius: 14px;
   --shadow: 0 10px 30px rgba(0,0,0,.06);
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+  --bg:#0d1117;
+  --text:#e6edf3;
+  --muted:#8b949e;
+  --link:#58a6ff;
+  --border:#30363d;
+  --card-bg:#161b22;
+  --shadow: 0 10px 30px rgba(0,0,0,.3);
+}
+
+/* Respect system preference when no theme is set */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#0d1117;
+    --text:#e6edf3;
+    --muted:#8b949e;
+    --link:#58a6ff;
+    --border:#30363d;
+    --card-bg:#161b22;
+    --shadow: 0 10px 30px rgba(0,0,0,.3);
+  }
 }
 
 *{ box-sizing:border-box; }
@@ -79,7 +104,7 @@ a:hover{ text-decoration:underline; }
   aspect-ratio: 1 / 1;    /* keeps it square */
   border-radius: 5px;
   overflow: hidden;       /* CRITICAL: crops big images */
-  background: #f3f3f3;
+  background: var(--card-bg);
   margin-bottom: 12px;
 }
 
@@ -112,7 +137,7 @@ a:hover{ text-decoration:underline; }
 }
 .hero .card{
   width: 220px;
-  background:#fafafa;
+  background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -122,7 +147,7 @@ a:hover{ text-decoration:underline; }
   width:100%;
   aspect-ratio: 1 / 1;
   border-radius: 12px;
-  background: linear-gradient(135deg, #f0f0f0, #fafafa);
+  background: var(--card-bg);
   border: 1px solid var(--border);
   display:flex;
   align-items:center;
@@ -131,7 +156,7 @@ a:hover{ text-decoration:underline; }
 }
 .hero .card .avatar span{
   font-family: var(--mono);
-  color:#777;
+  color: var(--muted);
   font-size: 12px;
 }
 .hero .card .mini{
@@ -190,13 +215,13 @@ hr.sep{
   font-size: 12px;
   border-radius: 999px;
   border: 1px solid var(--border);
-  background: #fafafa;
-  color: #333;
+  background: var(--card-bg);
+  color: var(--text);
 }
 .badge code{
   font-family: var(--mono);
   font-size: 11px;
-  color: #666;
+  color: var(--muted);
 }
 
 /* Right sidebar navigation (Patrick Collison-ish) */
@@ -225,7 +250,7 @@ hr.sep{
 .nav a{
   display:inline-block;
   font-size: 14px;
-  color: #1f1f1f;
+  color: var(--text);
 }
 .nav a.active{
   font-weight: 700;
@@ -238,7 +263,7 @@ hr.sep{
 }
 .nav .sub a{
   font-size: 13px;
-  color: #333;
+  color: var(--muted);
 }
 
 .footer{
@@ -254,7 +279,7 @@ hr.sep{
 /* Newsletter box */
 .newsletter{
   border:1px solid var(--border);
-  background:#fafafa;
+  background: var(--card-bg);
   border-radius: var(--radius);
   padding: 14px;
 }
@@ -278,16 +303,113 @@ hr.sep{
   border:1px solid var(--border);
   font-size: 14px;
   outline:none;
+  background: var(--bg);
+  color: var(--text);
 }
 .newsletter button{
   padding: 10px 12px;
   border-radius: 10px;
   border:1px solid var(--border);
-  background:#fff;
+  background: var(--bg);
   cursor:pointer;
   font-weight: 600;
+  color: var(--text);
 }
-.newsletter button:hover{ background:#f5f5f5; }
+.newsletter button:hover{ background: var(--card-bg); }
+
+/* Theme Toggle Switch */
+.theme-toggle {
+  position: relative;
+  width: 56px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  padding: 3px;
+}
+
+.theme-toggle:hover {
+  border-color: var(--muted);
+}
+
+.toggle-thumb {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  left: 2px;
+}
+
+[data-theme="dark"] .toggle-thumb,
+.theme-toggle.dark .toggle-thumb {
+  transform: translateX(28px);
+}
+
+.toggle-icon {
+  width: 14px;
+  height: 14px;
+  transition: opacity 0.2s ease, transform 0.3s ease;
+}
+
+/* Sun icon */
+.icon-sun {
+  position: absolute;
+  opacity: 1;
+  color: #f59e0b;
+}
+
+/* Moon icon */
+.icon-moon {
+  position: absolute;
+  opacity: 0;
+  color: #6366f1;
+}
+
+[data-theme="dark"] .icon-sun,
+.theme-toggle.dark .icon-sun {
+  opacity: 0;
+  transform: rotate(-90deg);
+}
+
+[data-theme="dark"] .icon-moon,
+.theme-toggle.dark .icon-moon {
+  opacity: 1;
+  transform: rotate(0deg);
+}
+
+/* Indicator icons in track */
+.toggle-track {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 5px;
+  pointer-events: none;
+}
+
+.track-icon {
+  width: 12px;
+  height: 12px;
+  opacity: 0.4;
+}
+
+.track-sun {
+  color: #f59e0b;
+}
+
+.track-moon {
+  color: #6366f1;
+}
 
 /* Responsive */
 @media (max-width: 940px){
