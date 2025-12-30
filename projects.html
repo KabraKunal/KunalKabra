@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Your Name — Problems & Projects</title>
+  <title>Kunal Kabra — Problems I'm Exploring</title>
   <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="assets/style.css" />
   <script>
@@ -22,7 +22,7 @@
         <img class="logo-dark" src="assets/Dark Logo.svg" alt="Logo" />
         <div>
           <div class="name">Kunal Kabra</div>
-          <div class="tagline">Problems & projects</div>
+          <div class="tagline">Problems I'm exploring</div>
         </div>
       </a>
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme">
@@ -68,38 +68,66 @@
 
         <div class="section">
           <h2>Problem areas</h2>
-          <ul class="list">
-            <li>
-              <strong>Manufacturing execution at scale</strong>
-              <div class="meta">What’s the smallest wedge product that helps factories improve throughput + quality?</div>
-              <div class="badges">
-                <span class="badge">Status: <code>researching</code></span>
-                <span class="badge">Angle: <code>workflow + incentives</code></span>
-              </div>
-            </li>
-            <li>
-              <strong>AI for ops teams</strong>
-              <div class="meta">Where does AI truly save time (not just demos)?</div>
-              <div class="badges">
-                <span class="badge">Status: <code>prototyping</code></span>
-              </div>
-            </li>
-          </ul>
+
+          <!-- Problem 1: Rural Productivity -->
+          <div class="problem-card">
+            <h3>Rural productivity: The physical work problem</h3>
+            <p class="question">Can you build robotics at unit economics that actually increase rural incomes?</p>
+
+            <div class="gap">
+              <strong>The gap:</strong> Rural India has 65% of the population but less than 40% of consumption. This isn't just an infrastructure problem or a distribution problem. It's an income problem. And income, for most rural households, is tied to physical labor: agriculture, construction, local services. The unlock isn't more software. It's physical automation that actually makes economic sense at the household level.
+            </div>
+
+            <div class="subsection">
+              <h4>What's broken</h4>
+              <ul>
+                <li>Software doesn't help if the bottleneck is physical labor</li>
+                <li>Most "rural tech" is theater—apps that assume smartphone penetration, fintech that doesn't change the income equation</li>
+                <li>Hardware startups in India are rare, and the ones that exist tend to target export or urban markets</li>
+              </ul>
+            </div>
+
+            <div class="subsection">
+              <h4>The unlock</h4>
+              <p>Robotics at unit economics that make sense for a household earning about Rs. 2,00,000/month. Not fancy. Not smart. Just durable, repairable, and cheap enough to pay back in 6 months.</p>
+            </div>
+
+            <div class="badges">
+              <span class="badge">Status: <code>early research</code></span>
+              <span class="badge">Angle: <code>robotics + unit economics</code></span>
+            </div>
+          </div>
+
+          <!-- Problem 2: Energy Independence -->
+          <div class="problem-card">
+            <h3>Energy independence: The mineral dependency trap</h3>
+            <p class="question">How does India reduce structural energy reliance when critical inputs are geopolitically concentrated?</p>
+
+            <div class="gap">
+              <strong>The gap:</strong> India imports 75-80% of its crude oil and nearly all its lithium, cobalt, and rare earths. The clean energy transition doesn't reduce this exposure, it just shifts it. We're swapping dependence on OPEC for dependence on a handful of mining jurisdictions, most dominated by China. The state is aware, the policy documents are dense with strategy. But the procurement-based playbook isn't scaling.
+            </div>
+
+            <div class="subsection">
+              <h4>What's broken</h4>
+              <ul>
+                <li>Domestic mining is slow: permitting, litigation, land acquisition</li>
+                <li>Recycling infra is nascent; battery volumes aren't there yet</li>
+                <li>Strategic partnerships are diplomatic theater and joint ventures with no material output</li>
+              </ul>
+            </div>
+
+            <div class="subsection">
+              <h4>The unlock</h4>
+              <p>Technology solutions that break the dependency loop, whether it's sodium-ion batteries that skip lithium, synthesis routes that reduce rare earth content, or recycling tech that catches up before it's too late.</p>
+            </div>
+
+            <div class="badges">
+              <span class="badge">Status: <code>nascent</code></span>
+              <span class="badge">Angle: <code>tech substitution over procurement strategy</code></span>
+            </div>
+          </div>
+
         </div>
-
-        <hr class="sep" />
-
-        <h1 style="margin:0 0 14px; font-size:28px; letter-spacing:-0.02em;">Side projects</h1>
-        <ul class="list">
-          <li>
-            <a href="#"><strong>Project name</strong></a>
-            <div class="meta">One sentence: what it does, who it’s for, why it matters.</div>
-          </li>
-          <li>
-            <a href="#"><strong>Project name</strong></a>
-            <div class="meta">Add links: demo • GitHub • write-up</div>
-          </li>
-        </ul>
 
         <section class="footer">
           <div>Contact: <a href="mailto:kunal.kabra.iitb@gmail.com">kunal.kabra.iitb@gmail.com</a></div>
@@ -113,7 +141,7 @@
             <li><a href="index.html">Home</a></li>
             <li><a href="about.html">About me</a></li>
             <li><a href="essays/index.html">Essays / Articles</a></li>
-            <li><a href="projects.html">Problems & projects</a></li>
+            <li><a href="projects.html">Problems I'm exploring</a></li>
             <li><a href="reading.html">Reading & resources</a></li>
             <li class="sub"><a href="essays/learning-notes.html">Learning notes</a></li>
           </ul>

@@ -793,3 +793,68 @@ hr.sep{
     width: 100%;
   }
 }
+
+/* Problem Cards */
+.problem-card {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border);
+}
+.problem-card:last-child {
+  border-bottom: none;
+}
+.problem-card h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.problem-card .question {
+  font-size: 15px;
+  color: var(--muted);
+  font-style: italic;
+  margin: 0 0 16px;
+}
+.problem-card .gap {
+  background: var(--card-bg);
+  border-left: 3px solid var(--link);
+  padding: 12px 16px;
+  margin: 16px 0;
+  border-radius: 0 8px 8px 0;
+}
+.problem-card .gap strong {
+  color: var(--text);
+}
+.problem-card h4 {
+  margin: 20px 0 10px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.problem-card p {
+  margin: 0 0 12px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.problem-card ul {
+  margin: 8px 0 16px;
+  padding-left: 20px;
+}
+.problem-card li {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+.problem-card .exploring {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 16px 0;
+  padding: 12px 16px;
+  background: var(--card-bg);
+  border-radius: 8px;
+}
+.problem-card .exploring strong {
+  color: var(--text);
+}
