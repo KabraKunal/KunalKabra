@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>/</loc></url>
-  <url><loc>/about.html</loc></url>
-  <url><loc>/projects.html</loc></url>
-  <url><loc>/reading.html</loc></url>
-  <url><loc>/essays/index.html</loc></url>
-  <url><loc>/essays/why-moats-matter.html</loc></url>
-  <url><loc>/essays/last-mile-manufacturing.html</loc></url>
-  <url><loc>/essays/agency-and-leverage.html</loc></url>
-  <url><loc>/essays/learning-notes.html</loc></url>
+  <url><loc>/about/</loc></url>
+  <url><loc>/projects/</loc></url>
+  <url><loc>/reading/</loc></url>
+  <url><loc>/essays/</loc></url>
+  <url><loc>/essays/why-moats-matter/</loc></url>
+  <url><loc>/essays/last-mile-manufacturing/</loc></url>
+  <url><loc>/essays/agency-and-leverage/</loc></url>
+  <url><loc>/essays/learning-notes/</loc></url>
 </urlset>
