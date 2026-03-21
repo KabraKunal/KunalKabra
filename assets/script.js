@@ -61,15 +61,20 @@
     if (matches || isIndex) a.classList.add("active");
   });
 
-  // Newsletter: lightweight UX (replace with Substack embed or custom backend)
-  const form = document.querySelector("[data-newsletter]");
-  if (form) {
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const email = form.querySelector("input[type='email']").value.trim();
-      if (!email) return;
-      alert("Nice — now wire this to Substack. Email: " + email);
-      form.reset();
+  // Essay filtering
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  if (filterBtns.length > 0) {
+    const essayItems = document.querySelectorAll('.essay-item');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter;
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        essayItems.forEach(item => {
+          const tags = item.dataset.tags.split(' ');
+          item.classList.toggle('hidden', filter !== 'all' && !tags.includes(filter));
+        });
+      });
     });
   }
 })();
