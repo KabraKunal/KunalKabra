@@ -105,10 +105,26 @@
     'mail': '<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline>',
     'link': '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>',
     'search': '<circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>',
+    'arrow-right': '<line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>',
   };
 
   function icon(name) {
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (svgPaths[name] || svgPaths['essay']) + '</svg>';
+  }
+
+  // Escape HTML to prevent XSS
+  function esc(str) {
+    var d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  // Highlight matching text in results
+  function highlight(text, query) {
+    if (!query) return esc(text);
+    var escaped = esc(text);
+    var qEsc = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return escaped.replace(new RegExp('(' + qEsc + ')', 'gi'), '<mark class="cmd-highlight">$1</mark>');
   }
 
   // Build DOM
@@ -121,13 +137,13 @@
     '<div class="cmd-palette">' +
       '<div class="cmd-input-wrap">' +
         '<span class="cmd-input-icon">' + icon('search') + '</span>' +
-        '<input class="cmd-input" type="text" placeholder="Search pages, essays, contact..." autocomplete="off" spellcheck="false" />' +
+        '<input class="cmd-input" type="text" placeholder="Type to search..." autocomplete="off" spellcheck="false" />' +
         '<kbd class="cmd-esc-hint">esc</kbd>' +
       '</div>' +
       '<div class="cmd-results" id="cmd-results"></div>' +
       '<div class="cmd-footer">' +
-        '<span class="cmd-footer-hint"><kbd>↑↓</kbd> navigate</span>' +
-        '<span class="cmd-footer-hint"><kbd>↵</kbd> open</span>' +
+        '<span class="cmd-footer-hint"><kbd>&uarr;&darr;</kbd> navigate</span>' +
+        '<span class="cmd-footer-hint"><kbd>&crarr;</kbd> open</span>' +
         '<span class="cmd-footer-hint"><kbd>esc</kbd> close</span>' +
         '<span class="cmd-footer-hint" style="margin-left:auto"><kbd>/</kbd> to open</span>' +
       '</div>' +
@@ -141,14 +157,16 @@
 
   function openPalette() {
     backdrop.classList.add('open');
+    document.body.classList.add('cmd-open');
     input.value = '';
     selectedIndex = 0;
     render('');
-    setTimeout(function() { input.focus(); }, 10);
+    requestAnimationFrame(function() { input.focus(); });
   }
 
   function closePalette() {
     backdrop.classList.remove('open');
+    document.body.classList.remove('cmd-open');
   }
 
   function render(query) {
@@ -162,7 +180,12 @@
       : commands;
 
     if (filtered.length === 0) {
-      resultsEl.innerHTML = '<div class="cmd-empty">No results for "' + query + '"</div>';
+      resultsEl.innerHTML =
+        '<div class="cmd-empty">' +
+          '<div class="cmd-empty-icon">' + icon('search') + '</div>' +
+          '<div class="cmd-empty-text">No results for "' + esc(query) + '"</div>' +
+          '<div class="cmd-empty-sub">Try searching for a page, essay, or contact</div>' +
+        '</div>';
       selectedIndex = -1;
       return;
     }
@@ -180,7 +203,7 @@
     var html = '';
     var idx = 0;
     order.forEach(function(group) {
-      html += '<div class="cmd-group-label">' + group + '</div>';
+      html += '<div class="cmd-group-label">' + esc(group) + '</div>';
       groups[group].forEach(function(cmd) {
         var sel = idx === selectedIndex;
         html +=
@@ -189,10 +212,10 @@
           ' data-idx="' + idx + '">' +
             '<span class="cmd-item-icon">' + icon(cmd.icon) + '</span>' +
             '<span class="cmd-item-text">' +
-              '<span class="cmd-item-title">' + cmd.title + '</span>' +
-              '<span class="cmd-item-subtitle">' + cmd.subtitle + '</span>' +
+              '<span class="cmd-item-title">' + highlight(cmd.title, q) + '</span>' +
+              '<span class="cmd-item-subtitle">' + highlight(cmd.subtitle, q) + '</span>' +
             '</span>' +
-            '<span class="cmd-item-enter">↵</span>' +
+            '<span class="cmd-item-enter">' + icon('arrow-right') + '</span>' +
           '</a>';
         idx++;
       });
@@ -200,18 +223,37 @@
 
     resultsEl.innerHTML = html;
 
-    resultsEl.querySelectorAll('.cmd-item').forEach(function(el) {
-      el.addEventListener('mouseenter', function() {
-        selectedIndex = parseInt(el.dataset.idx);
-        render(input.value);
-      });
+    // Use event delegation instead of per-item listeners
+    updateSelection();
+  }
+
+  function updateSelection() {
+    var items = resultsEl.querySelectorAll('.cmd-item');
+    items.forEach(function(el, i) {
+      if (parseInt(el.dataset.idx) === selectedIndex) {
+        el.classList.add('selected');
+      } else {
+        el.classList.remove('selected');
+      }
     });
   }
+
+  // Event delegation for mouse hover
+  resultsEl.addEventListener('mousemove', function(e) {
+    var item = e.target.closest('.cmd-item');
+    if (item) {
+      var newIdx = parseInt(item.dataset.idx);
+      if (newIdx !== selectedIndex) {
+        selectedIndex = newIdx;
+        updateSelection();
+      }
+    }
+  });
 
   function move(dir) {
     if (filtered.length === 0) return;
     selectedIndex = (selectedIndex + dir + filtered.length) % filtered.length;
-    render(input.value);
+    updateSelection();
     var sel = resultsEl.querySelector('.cmd-item.selected');
     if (sel) sel.scrollIntoView({ block: 'nearest' });
   }
@@ -228,12 +270,12 @@
     }
   }
 
-  // Inject / hint into sidebar nav
+  // Inject search trigger into sidebar nav
   var navbox = document.querySelector('.navbox');
   if (navbox) {
     var hint = document.createElement('div');
     hint.style.cssText = 'margin-top:14px; padding-top:12px; border-top:1px solid var(--border);';
-    hint.innerHTML = '<button class="cmd-kbd-trigger"><kbd style="font-size:13px;font-family:monospace;">/</kbd>&nbsp; Search</button>';
+    hint.innerHTML = '<button class="cmd-kbd-trigger">' + icon('search') + ' Search<kbd>/</kbd></button>';
     navbox.appendChild(hint);
     hint.querySelector('.cmd-kbd-trigger').addEventListener('click', openPalette);
   }

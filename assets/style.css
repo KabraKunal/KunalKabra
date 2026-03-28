@@ -880,20 +880,25 @@ hr.sep{
 
 
 /* Command Palette */
+/* ── Command Palette ── */
 .cmd-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 1000;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: 14vh;
+  padding-top: 12vh;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.12s ease, visibility 0.12s ease;
+  transition: opacity 0.18s ease, visibility 0.18s ease;
+}
+[data-theme="light"] .cmd-backdrop,
+:root:not([data-theme="dark"]) .cmd-backdrop {
+  background: rgba(255,255,255,0.6);
 }
 .cmd-backdrop.open {
   opacity: 1;
@@ -901,116 +906,164 @@ hr.sep{
 }
 .cmd-palette {
   width: 100%;
-  max-width: 560px;
-  margin: 0 20px;
+  max-width: 540px;
+  margin: 0 16px;
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  box-shadow: 0 32px 80px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,0,0,0.05);
+  border-radius: 16px;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.04),
+    0 8px 24px rgba(0,0,0,0.12),
+    0 24px 48px rgba(0,0,0,0.08);
   overflow: hidden;
-  transform: translateY(-10px) scale(0.95);
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
+  transform: translateY(-8px) scale(0.98);
+  opacity: 0;
+  transition:
+    transform 0.25s cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 0.18s ease;
+  will-change: transform, opacity;
+}
+[data-theme="dark"] .cmd-palette {
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.06),
+    0 8px 24px rgba(0,0,0,0.4),
+    0 24px 64px rgba(0,0,0,0.3);
 }
 .cmd-backdrop.open .cmd-palette {
   transform: translateY(0) scale(1);
+  opacity: 1;
 }
+
+/* ── Search Input ── */
 .cmd-input-wrap {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 14px 16px;
+  gap: 12px;
+  padding: 16px 18px;
   border-bottom: 1px solid var(--border);
 }
 .cmd-input-icon {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   color: var(--muted);
   flex-shrink: 0;
+  opacity: 0.6;
 }
 .cmd-input-icon svg {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
 }
 .cmd-input {
   flex: 1;
   background: none;
   border: none;
   outline: none;
-  font-size: 15px;
+  font-size: 16px;
   color: var(--text);
   font-family: var(--sans);
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
 .cmd-input::placeholder {
   color: var(--muted);
+  opacity: 0.5;
+  font-weight: 400;
 }
 .cmd-esc-hint {
   font-family: var(--mono);
   font-size: 10px;
-  padding: 2px 6px;
+  padding: 3px 7px;
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: 5px;
   background: var(--card-bg);
   color: var(--muted);
   flex-shrink: 0;
+  opacity: 0.6;
+  line-height: 1;
 }
+
+/* ── Results List ── */
 .cmd-results {
-  max-height: 380px;
+  max-height: 360px;
   overflow-y: auto;
-  padding: 6px 6px 2px;
-  scrollbar-width: none;
+  padding: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }
 .cmd-results::-webkit-scrollbar {
-  display: none;
+  width: 4px;
+}
+.cmd-results::-webkit-scrollbar-track {
+  background: transparent;
+}
+.cmd-results::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
 }
 .cmd-group-label {
-  padding: 10px 10px 3px;
-  font-size: 10px;
-  font-weight: 600;
+  padding: 12px 10px 4px;
+  font-size: 11px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: var(--muted);
-  opacity: 0.6;
+  opacity: 0.5;
+  user-select: none;
 }
+.cmd-group-label:first-child {
+  padding-top: 6px;
+}
+
+/* ── Result Items ── */
 .cmd-item {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: 8px 10px;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
   text-decoration: none;
   color: var(--text);
-  transition: background 0.08s ease;
+  transition: background 0.1s ease, box-shadow 0.1s ease;
+  position: relative;
 }
 .cmd-item:hover,
 .cmd-item.selected {
   background: var(--card-bg);
   text-decoration: none;
 }
+.cmd-item.selected {
+  box-shadow: inset 0 0 0 1px var(--border);
+}
 .cmd-item-icon {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  border-radius: 8px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
   color: var(--muted);
-  opacity: 0.7;
+  transition: color 0.1s ease, border-color 0.1s ease, background 0.1s ease;
 }
 .cmd-item.selected .cmd-item-icon {
-  opacity: 1;
   color: var(--text);
+  border-color: transparent;
+  background: var(--link);
+  color: #fff;
 }
 .cmd-item-icon svg {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
 }
 .cmd-item-text {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
+  gap: 1px;
 }
 .cmd-item-title {
   font-size: 14px;
@@ -1018,7 +1071,8 @@ hr.sep{
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.3;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
 }
 .cmd-item-subtitle {
   font-size: 12px;
@@ -1026,63 +1080,142 @@ hr.sep{
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-top: 3px;
-  line-height: 1.4;
+  line-height: 1.3;
+  opacity: 0.7;
 }
 .cmd-item-enter {
-  font-family: var(--mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   opacity: 0;
   flex-shrink: 0;
+  transition: opacity 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
 }
 .cmd-item.selected .cmd-item-enter {
   opacity: 1;
 }
+.cmd-item-enter svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* ── Search Highlight ── */
+.cmd-highlight {
+  background: none;
+  color: var(--link);
+  font-weight: 600;
+}
+
+/* ── Empty State ── */
 .cmd-empty {
-  padding: 28px;
+  padding: 40px 28px;
   text-align: center;
   color: var(--muted);
   font-size: 13px;
+  opacity: 0.6;
+  line-height: 1.6;
 }
+.cmd-empty-icon {
+  margin-bottom: 8px;
+  opacity: 0.2;
+  display: flex;
+  justify-content: center;
+}
+.cmd-empty-icon svg {
+  width: 32px;
+  height: 32px;
+}
+.cmd-empty-text {
+  font-weight: 500;
+}
+.cmd-empty-sub {
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+/* ── Footer ── */
 .cmd-footer {
   display: flex;
-  gap: 14px;
-  padding: 8px 14px;
+  gap: 16px;
+  padding: 10px 16px;
   border-top: 1px solid var(--border);
+  background: var(--card-bg);
 }
 .cmd-footer-hint {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   font-size: 11px;
   color: var(--muted);
+  opacity: 0.6;
 }
 .cmd-footer kbd {
   font-family: var(--mono);
   font-size: 10px;
-  padding: 1px 5px;
+  padding: 2px 5px;
   border: 1px solid var(--border);
-  border-radius: 3px;
-  background: var(--card-bg);
+  border-radius: 4px;
+  background: var(--bg);
   color: var(--muted);
+  line-height: 1;
 }
+
+/* ── Sidebar Trigger Button ── */
 .cmd-kbd-trigger {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  font-family: var(--mono);
-  font-size: 10px;
-  padding: 2px 7px;
+  gap: 6px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 400;
+  padding: 6px 10px;
   border: 1px solid var(--border);
-  border-radius: 5px;
+  border-radius: 8px;
   background: var(--card-bg);
   color: var(--muted);
   cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
   white-space: nowrap;
+  width: 100%;
+}
+.cmd-kbd-trigger svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  opacity: 0.5;
 }
 .cmd-kbd-trigger:hover {
   border-color: var(--muted);
   color: var(--text);
+  background: var(--bg);
+}
+.cmd-kbd-trigger kbd {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--muted);
+  line-height: 1.2;
+  margin-left: auto;
+}
+
+/* ── Scroll lock when palette is open ── */
+body.cmd-open {
+  overflow: hidden;
+}
+
+@media (max-width: 600px) {
+  .cmd-backdrop { padding-top: 6vh; }
+  .cmd-palette { max-width: 100%; margin: 0 10px; border-radius: 14px; }
+  .cmd-results { max-height: 50vh; }
+  .cmd-footer { display: none; }
 }
