@@ -79,48 +79,6 @@
   }
 })();
 
-// Typewriter hero (homepage only)
-(function() {
-  var h1 = document.querySelector('.hero h1');
-  if (!h1) return;
-
-  var fullText = h1.textContent;
-  h1.textContent = '';
-
-  var cursor = document.createElement('span');
-  cursor.className = 'typewriter-cursor';
-  h1.appendChild(cursor);
-
-  // Fade-in targets: the intro paragraph and the sections below
-  var fadeEls = document.querySelectorAll('.hero > div > p, .hero > div > .section');
-  fadeEls.forEach(function(el) { el.classList.add('hero-intro-fade'); });
-
-  var i = 0;
-  function type() {
-    if (i < fullText.length) {
-      h1.insertBefore(document.createTextNode(fullText[i]), cursor);
-      i++;
-      // Slightly vary speed for natural feel
-      var delay = fullText[i - 1] === '.' || fullText[i - 1] === ',' ? 180 : 42;
-      setTimeout(type, delay);
-    } else {
-      // Blink cursor a moment then fade it out
-      setTimeout(function() {
-        cursor.classList.add('fade-out');
-        setTimeout(function() { cursor.remove(); }, 600);
-      }, 1200);
-      // Fade in the rest of the content
-      setTimeout(function() {
-        fadeEls.forEach(function(el, idx) {
-          setTimeout(function() { el.classList.add('visible'); }, idx * 80);
-        });
-      }, 300);
-    }
-  }
-
-  setTimeout(type, 400);
-})();
-
 // Command Palette
 (function() {
   var commands = [
