@@ -333,8 +333,8 @@ hr.sep{
   margin: 16px 0;
   border-radius: 0 var(--radius) var(--radius) 0;
 }
-.gap p { margin: 0; }
-.gap p + p { margin-top: 8px; }
+.gap p { margin: 0; line-height: 1.5; }
+.gap p + p { margin-top: 4px; }
 
 /* Newsletter CTA Box */
 .newsletter-cta {
