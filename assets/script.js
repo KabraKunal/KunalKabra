@@ -161,7 +161,10 @@
     input.value = '';
     selectedIndex = 0;
     render('');
-    requestAnimationFrame(function() { input.focus(); });
+    // Double rAF ensures the palette is visible before focusing
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() { input.focus(); });
+    });
   }
 
   function closePalette() {
@@ -287,20 +290,25 @@
   }
 
   document.addEventListener('keydown', function(e) {
+    var isOpen = backdrop.classList.contains('open');
+
     if (e.key === '/' && !isTyping() && !e.metaKey && !e.ctrlKey) {
       e.preventDefault();
-      backdrop.classList.contains('open') ? closePalette() : openPalette();
+      isOpen ? closePalette() : openPalette();
+      return;
     }
-    if (e.key === 'Escape' && backdrop.classList.contains('open')) {
-      closePalette();
-    }
-  });
 
-  input.addEventListener('keydown', function(e) {
-    if (e.key === 'ArrowDown') { e.preventDefault(); move(1); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); move(-1); }
-    else if (e.key === 'Enter') { e.preventDefault(); activate(); }
-    else if (e.key === 'Escape') { closePalette(); }
+    if (!isOpen) return;
+
+    if (e.key === 'Escape') { closePalette(); return; }
+    if (e.key === 'ArrowDown') { e.preventDefault(); move(1); return; }
+    if (e.key === 'ArrowUp') { e.preventDefault(); move(-1); return; }
+    if (e.key === 'Enter') { e.preventDefault(); activate(); return; }
+
+    // Any other printable key — make sure input is focused
+    if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && document.activeElement !== input) {
+      input.focus();
+    }
   });
 
   input.addEventListener('input', function() {
