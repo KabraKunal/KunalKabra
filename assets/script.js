@@ -129,6 +129,7 @@
         '<span class="cmd-footer-hint"><kbd>↑↓</kbd> navigate</span>' +
         '<span class="cmd-footer-hint"><kbd>↵</kbd> open</span>' +
         '<span class="cmd-footer-hint"><kbd>esc</kbd> close</span>' +
+        '<span class="cmd-footer-hint" style="margin-left:auto"><kbd>/</kbd> to open</span>' +
       '</div>' +
     '</div>';
   document.body.appendChild(backdrop);
@@ -227,20 +228,29 @@
     }
   }
 
-  // Inject ⌘K hint into sidebar nav
+  // Inject / hint into sidebar nav
   var navbox = document.querySelector('.navbox');
   if (navbox) {
     var hint = document.createElement('div');
     hint.style.cssText = 'margin-top:14px; padding-top:12px; border-top:1px solid var(--border);';
-    hint.innerHTML = '<button class="cmd-kbd-trigger">⌘K &nbsp;Search</button>';
+    hint.innerHTML = '<button class="cmd-kbd-trigger"><kbd style="font-size:13px;font-family:monospace;">/</kbd>&nbsp; Search</button>';
     navbox.appendChild(hint);
     hint.querySelector('.cmd-kbd-trigger').addEventListener('click', openPalette);
   }
 
+  function isTyping() {
+    var tag = document.activeElement && document.activeElement.tagName;
+    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' ||
+           (document.activeElement && document.activeElement.isContentEditable);
+  }
+
   document.addEventListener('keydown', function(e) {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    if (e.key === '/' && !isTyping() && !e.metaKey && !e.ctrlKey) {
       e.preventDefault();
       backdrop.classList.contains('open') ? closePalette() : openPalette();
+    }
+    if (e.key === 'Escape' && backdrop.classList.contains('open')) {
+      closePalette();
     }
   });
 
