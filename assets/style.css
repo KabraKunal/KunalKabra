@@ -857,6 +857,63 @@ hr.sep{
   color: var(--text);
 }
 
+/* Page Transitions (View Transitions API) */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: 160ms ease both vt-out;
+}
+
+::view-transition-new(root) {
+  animation: 220ms ease both vt-in;
+}
+
+@keyframes vt-out {
+  to { opacity: 0; transform: translateY(-6px); }
+}
+
+@keyframes vt-in {
+  from { opacity: 0; transform: translateY(8px); }
+}
+
+/* Typewriter */
+.typewriter-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 0.8em;
+  background: currentColor;
+  margin-left: 3px;
+  vertical-align: middle;
+  border-radius: 1px;
+  animation: cur-blink 0.9s step-end infinite;
+}
+
+@keyframes cur-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+.typewriter-cursor.fade-out {
+  animation: cur-fade 0.6s ease forwards;
+}
+
+@keyframes cur-fade {
+  to { opacity: 0; }
+}
+
+.hero-intro-fade {
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.hero-intro-fade.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* Command Palette */
 .cmd-backdrop {
   position: fixed;
