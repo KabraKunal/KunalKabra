@@ -258,7 +258,7 @@
           <kbd>g e</kbd><span>Go essays</span>
           <kbd>g p</kbd><span>Go problems</span>
           <kbd>g r</kbd><span>Go reading</span>
-          <kbd>g l</kbd><span>Go learning notes</span>
+          <kbd>g + l</kbd><span>Go learning notes</span>
           <kbd>Esc</kbd><span>Close overlay or clear selection</span>
         </div>
         <div class="kbd-help-footer">These shortcuts are disabled while typing in inputs.</div>
@@ -326,6 +326,7 @@
 
     const helpOpen = keyboardHelp.classList.contains('open');
     if (e.key === 'Escape') {
+      e.preventDefault();
       if (helpOpen) keyboardHelp.classList.remove('open');
       clearNavSelection();
       setGoPrefix(false);
