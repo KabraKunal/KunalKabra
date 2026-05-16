@@ -226,6 +226,158 @@
       }
     });
   }
+
+  // Keyboard-first site navigation, inspired by Notion-style shortcuts
+  function isTypingContext() {
+    const tag = document.activeElement && document.activeElement.tagName;
+    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' ||
+      (document.activeElement && document.activeElement.isContentEditable);
+  }
+
+  function createKeyboardHelp() {
+    const existing = document.querySelector('.kbd-help-backdrop');
+    if (existing) return existing;
+
+    const help = document.createElement('div');
+    help.className = 'kbd-help-backdrop';
+    help.setAttribute('role', 'dialog');
+    help.setAttribute('aria-modal', 'true');
+    help.setAttribute('aria-label', 'Keyboard shortcuts');
+    help.innerHTML = `
+      <div class="kbd-help-panel">
+        <h2>Keyboard shortcuts</h2>
+        <div class="kbd-help-grid">
+          <kbd>/</kbd><span>Open search</span>
+          <kbd>?</kbd><span>Show or hide this help</span>
+          <kbd>t</kbd><span>Toggle theme</span>
+          <kbd>n</kbd><span>Focus sidebar navigation</span>
+          <kbd>↑ ↓</kbd><span>Move through nav links, essays, or search results</span>
+          <kbd>← →</kbd><span>Move through essay filters</span>
+          <kbd>Enter</kbd><span>Open selected item</span>
+          <kbd>g h</kbd><span>Go home</span>
+          <kbd>g e</kbd><span>Go essays</span>
+          <kbd>g p</kbd><span>Go problems</span>
+          <kbd>g r</kbd><span>Go reading</span>
+          <kbd>g l</kbd><span>Go learning notes</span>
+          <kbd>Esc</kbd><span>Close overlay or clear selection</span>
+        </div>
+        <div class="kbd-help-footer">These shortcuts are disabled while typing in inputs.</div>
+      </div>`;
+    document.body.appendChild(help);
+    help.addEventListener('click', (e) => {
+      if (e.target === help) help.classList.remove('open');
+    });
+    return help;
+  }
+
+  const keyboardHelp = createKeyboardHelp();
+  let goPrefixActive = false;
+  let goPrefixTimer = null;
+  let navIndex = -1;
+
+  function setGoPrefix(active) {
+    goPrefixActive = active;
+    clearTimeout(goPrefixTimer);
+    if (active) {
+      goPrefixTimer = setTimeout(() => { goPrefixActive = false; }, 1400);
+    }
+  }
+
+  function siteUrl(path) {
+    const marker = '/KunalKabra/';
+    const href = window.location.href;
+    const idx = href.indexOf(marker);
+    if (idx >= 0) {
+      return href.slice(0, idx + marker.length) + path.replace(/^\//, '');
+    }
+    return path;
+  }
+
+  function goTo(key) {
+    const routes = {
+      h: '',
+      e: 'essays/',
+      p: 'projects/',
+      r: 'reading/',
+      l: 'essays/learning-notes/'
+    };
+    if (routes[key] !== undefined) window.location.href = siteUrl(routes[key]);
+  }
+
+  function navLinks() {
+    return Array.from(document.querySelectorAll('.nav a'));
+  }
+
+  function clearNavSelection() {
+    navLinks().forEach(link => link.classList.remove('keyboard-selected'));
+  }
+
+  function focusNav(index) {
+    const links = navLinks();
+    if (!links.length) return;
+    navIndex = (index + links.length) % links.length;
+    clearNavSelection();
+    links[navIndex].classList.add('keyboard-selected');
+    links[navIndex].focus({ preventScroll: true });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (isTypingContext() || document.body.classList.contains('cmd-open')) return;
+
+    const helpOpen = keyboardHelp.classList.contains('open');
+    if (e.key === 'Escape') {
+      if (helpOpen) keyboardHelp.classList.remove('open');
+      clearNavSelection();
+      setGoPrefix(false);
+      return;
+    }
+
+    if (e.key === '?') {
+      e.preventDefault();
+      keyboardHelp.classList.toggle('open');
+      return;
+    }
+
+    if (helpOpen) return;
+
+    if (goPrefixActive) {
+      const key = e.key.toLowerCase();
+      setGoPrefix(false);
+      if ('heprl'.includes(key)) {
+        e.preventDefault();
+        goTo(key);
+      }
+      return;
+    }
+
+    if (e.key.toLowerCase() === 'g' && !e.metaKey && !e.ctrlKey && !e.altKey) {
+      e.preventDefault();
+      setGoPrefix(true);
+      return;
+    }
+
+    if (e.key.toLowerCase() === 't' && !e.metaKey && !e.ctrlKey && !e.altKey) {
+      e.preventDefault();
+      const currentTheme = html.getAttribute('data-theme');
+      setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+      return;
+    }
+
+    if (e.key.toLowerCase() === 'n' && !e.metaKey && !e.ctrlKey && !e.altKey) {
+      e.preventDefault();
+      focusNav(navIndex >= 0 ? navIndex : 0);
+      return;
+    }
+
+    const activeInNav = document.activeElement && document.activeElement.closest && document.activeElement.closest('.navbox');
+    if (activeInNav && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+      e.preventDefault();
+      const links = navLinks();
+      const current = links.indexOf(document.activeElement);
+      const base = current >= 0 ? current : Math.max(navIndex, 0);
+      focusNav(base + (e.key === 'ArrowDown' ? 1 : -1));
+    }
+  });
 })();
 
 // Command Palette
