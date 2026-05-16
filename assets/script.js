@@ -384,7 +384,7 @@
 // Command Palette
 (function() {
   var commands = [
-    { group: 'Pages', title: 'About / Home', subtitle: 'Who I am, what I\'m working on, and where to start', url: '/', icon: 'home' },
+    { group: 'Pages', title: 'Home', subtitle: 'Who I am, what I\'m working on, and where to start', url: '/', icon: 'home' },
     { group: 'Pages', title: 'Essays', subtitle: 'All essays and articles', url: '/essays', icon: 'file-text' },
     { group: 'Pages', title: 'Projects', subtitle: 'Problems I\'m exploring', url: '/projects', icon: 'box' },
     { group: 'Pages', title: 'Reading', subtitle: 'Books and resources', url: '/reading', icon: 'book' },
