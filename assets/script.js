@@ -61,20 +61,169 @@
     if (matches || isIndex) a.classList.add("active");
   });
 
-  // Essay filtering
-  const filterBtns = document.querySelectorAll('.filter-btn');
+  // Essay filtering + keyboard-first navigation
+  const filterBtns = Array.from(document.querySelectorAll('.filter-btn'));
   if (filterBtns.length > 0) {
-    const essayItems = document.querySelectorAll('.essay-item');
-    filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const filter = btn.dataset.filter;
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        essayItems.forEach(item => {
-          const tags = item.dataset.tags.split(' ');
-          item.classList.toggle('hidden', filter !== 'all' && !tags.includes(filter));
-        });
+    const essayItems = Array.from(document.querySelectorAll('.essay-item'));
+    let filterIndex = Math.max(0, filterBtns.findIndex(btn => btn.classList.contains('active')));
+    let essayIndex = -1;
+    let keyboardZone = 'filters';
+
+    function isTypingInField() {
+      const tag = document.activeElement && document.activeElement.tagName;
+      return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' ||
+        (document.activeElement && document.activeElement.isContentEditable);
+    }
+
+    function visibleEssays() {
+      return essayItems.filter(item => !item.classList.contains('hidden'));
+    }
+
+    function clearKeyboardSelection() {
+      filterBtns.forEach(btn => btn.classList.remove('keyboard-selected'));
+      essayItems.forEach(item => item.classList.remove('keyboard-selected'));
+    }
+
+    function selectFilter(index, shouldFocus) {
+      filterIndex = (index + filterBtns.length) % filterBtns.length;
+      keyboardZone = 'filters';
+      clearKeyboardSelection();
+      filterBtns[filterIndex].classList.add('keyboard-selected');
+      if (shouldFocus) filterBtns[filterIndex].focus({ preventScroll: true });
+    }
+
+    function selectEssay(index, shouldFocus) {
+      const visible = visibleEssays();
+      if (visible.length === 0) return;
+      essayIndex = (index + visible.length) % visible.length;
+      keyboardZone = 'essays';
+      clearKeyboardSelection();
+      const selected = visible[essayIndex];
+      selected.classList.add('keyboard-selected');
+      selected.scrollIntoView({ block: 'nearest' });
+      const link = selected.querySelector('.essay-title a');
+      if (shouldFocus && link) link.focus({ preventScroll: true });
+    }
+
+    function applyFilter(btn) {
+      const filter = btn.dataset.filter;
+      filterBtns.forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
       });
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
+
+      essayItems.forEach(item => {
+        const tags = item.dataset.tags.split(' ');
+        item.classList.toggle('hidden', filter !== 'all' && !tags.includes(filter));
+      });
+
+      essayIndex = -1;
+    }
+
+    filterBtns.forEach((btn, index) => {
+      btn.setAttribute('aria-pressed', btn.classList.contains('active') ? 'true' : 'false');
+      btn.addEventListener('click', () => {
+        filterIndex = index;
+        keyboardZone = 'filters';
+        clearKeyboardSelection();
+        applyFilter(btn);
+      });
+      btn.addEventListener('focus', () => {
+        filterIndex = index;
+        keyboardZone = 'filters';
+      });
+    });
+
+    essayItems.forEach((item, index) => {
+      const link = item.querySelector('.essay-title a');
+      if (!link) return;
+      link.addEventListener('focus', () => {
+        const visible = visibleEssays();
+        const visibleIndex = visible.indexOf(item);
+        if (visibleIndex >= 0) {
+          essayIndex = visibleIndex;
+          keyboardZone = 'essays';
+          clearKeyboardSelection();
+          item.classList.add('keyboard-selected');
+        }
+      });
+      link.addEventListener('blur', () => {
+        if (essayItems[index]) essayItems[index].classList.remove('keyboard-selected');
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (document.body.classList.contains('cmd-open') || isTypingInField()) return;
+
+      const activeIsFilter = filterBtns.includes(document.activeElement);
+      const activeEssayItem = document.activeElement && document.activeElement.closest && document.activeElement.closest('.essay-item');
+      const onEssaysPage = document.querySelector('.essay-list') && document.querySelector('.essay-filters');
+      if (!onEssaysPage) return;
+
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        selectFilter(filterIndex + (e.key === 'ArrowRight' ? 1 : -1), true);
+        return;
+      }
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (keyboardZone === 'filters' || activeIsFilter || essayIndex < 0) {
+          selectEssay(0, true);
+        } else {
+          selectEssay(essayIndex + 1, true);
+        }
+        return;
+      }
+
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (keyboardZone === 'essays' || activeEssayItem) {
+          if (essayIndex <= 0) selectFilter(filterIndex, true);
+          else selectEssay(essayIndex - 1, true);
+        } else {
+          selectFilter(filterIndex, true);
+        }
+        return;
+      }
+
+      if (e.key === 'Home') {
+        e.preventDefault();
+        keyboardZone === 'essays' ? selectEssay(0, true) : selectFilter(0, true);
+        return;
+      }
+
+      if (e.key === 'End') {
+        e.preventDefault();
+        keyboardZone === 'essays' ? selectEssay(visibleEssays().length - 1, true) : selectFilter(filterBtns.length - 1, true);
+        return;
+      }
+
+      if ((e.key === 'Enter' || e.key === ' ') && keyboardZone === 'filters') {
+        e.preventDefault();
+        applyFilter(filterBtns[filterIndex]);
+        selectFilter(filterIndex, true);
+        return;
+      }
+
+      if (e.key === 'Enter' && keyboardZone === 'essays') {
+        const visible = visibleEssays();
+        const selected = visible[essayIndex];
+        const link = selected && selected.querySelector('.essay-title a');
+        if (link) {
+          e.preventDefault();
+          link.click();
+        }
+        return;
+      }
+
+      if (e.key === 'Escape') {
+        clearKeyboardSelection();
+        essayIndex = -1;
+        keyboardZone = 'filters';
+      }
     });
   }
 })();
