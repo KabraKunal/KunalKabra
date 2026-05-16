@@ -19,8 +19,8 @@
 /* Dark theme */
 [data-theme="dark"] {
   --bg:#11100e;
-  --text:#eee7dd;
-  --muted:#afa397;
+  --text:#ffffff;
+  --muted:#ffffff;
   --link:#d6a066;
   --border:#342c24;
   --card-bg:#1a1714;
@@ -32,8 +32,8 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg:#11100e;
-    --text:#eee7dd;
-    --muted:#afa397;
+    --text:#ffffff;
+    --muted:#ffffff;
     --link:#d6a066;
     --border:#342c24;
     --card-bg:#1a1714;
@@ -49,7 +49,7 @@ body{
   font-family: var(--sans);
   background: var(--bg);
   color: var(--text);
-  font-size: 15.5px;
+  font-size: 13.5px;
   line-height:1.62;
 }
 
@@ -98,12 +98,12 @@ a:hover{ text-decoration:underline; }
 }
 .brand .name{
   font-weight: 800;
-  font-size: 18px;
+  font-size: 16px;
   letter-spacing: -0.02em;
 }
 .brand .tagline{
   color: var(--muted);
-  font-size: 12.5px;
+  font-size: 10.5px;
   margin-top: -2px;
 }
 
@@ -237,14 +237,14 @@ a:hover{ text-decoration:underline; }
 }
 .hero h1{
   margin:0 0 12px;
-  font-size: clamp(30px, 4vw, 34px);
+  font-size: clamp(28px, 4vw, 32px);
   line-height:1.15;
   letter-spacing: -0.03em;
 }
 .hero p{
   margin: 9px 0;
   color: var(--muted);
-  font-size: 15.5px;
+  font-size: 13.5px;
 }
 .hero .card{
   width: 220px;
@@ -282,7 +282,7 @@ a:hover{ text-decoration:underline; }
 }
 .section h2{
   margin: 0 0 10px;
-  font-size: 17px;
+  font-size: 15px;
   letter-spacing: -0.01em;
 }
 .section p, .section li{
@@ -316,7 +316,7 @@ hr.sep{
 .list li:last-child{ border-bottom: 0; }
 .list .meta{
   color: var(--muted);
-  font-size: 12.5px;
+  font-size: 10.5px;
 }
 .badges{
   display:flex;
@@ -352,7 +352,7 @@ hr.sep{
   border-left: 1px solid var(--border);
 }
 .navbox .navtitle{
-  font-size: 12px;
+  font-size: 10px;
   color: var(--muted);
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -366,7 +366,7 @@ hr.sep{
 .nav li{ margin: 8px 0; }
 .nav a{
   display:inline-block;
-  font-size: 13.5px;
+  font-size: 11.5px;
   color: var(--text);
 }
 .nav a.active{
@@ -379,14 +379,31 @@ hr.sep{
   border-top: 1px solid var(--border);
 }
 .nav .sub a{
-  font-size: 13px;
+  font-size: 11px;
   color: var(--muted);
+}
+
+.nav-photo{
+  width: 100%;
+  margin-top: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--soft-bg);
+}
+
+.nav-photo img{
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: center 28%;
 }
 
 .footer{
   margin-top: 32px;
   color: var(--muted);
-  font-size: 12.5px;
+  font-size: 10.5px;
 }
 .footer code{
   font-family: var(--mono);
