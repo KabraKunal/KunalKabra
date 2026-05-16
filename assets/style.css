@@ -1,41 +1,44 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root{
-  --bg:#ffffff;
-  --text:#111;
-  --muted:#555;
-  --link:#2563eb;
-  --border:#eaeaea;
-  --card-bg:#fafafa;
+  --bg:#fbfaf7;
+  --text:#171717;
+  --muted:#66615a;
+  --link:#8a4b22;
+  --border:#e6ded2;
+  --card-bg:#ffffff;
+  --soft-bg:#f4efe7;
   --max: 860px;
   --sidebar: 220px;
-  --radius: 8px;
-  --shadow: 0 4px 16px rgba(0,0,0,.10);
+  --radius: 12px;
+  --shadow: 0 10px 30px rgba(46,33,20,.08);
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --sans: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
 }
 
 /* Dark theme */
 [data-theme="dark"] {
-  --bg:#0d1117;
-  --text:#e6edf3;
-  --muted:#8b949e;
-  --link:#58a6ff;
-  --border:#30363d;
-  --card-bg:#161b22;
-  --shadow: 0 4px 16px rgba(0,0,0,.4);
+  --bg:#11100e;
+  --text:#eee7dd;
+  --muted:#afa397;
+  --link:#d6a066;
+  --border:#342c24;
+  --card-bg:#1a1714;
+  --soft-bg:#211c17;
+  --shadow: 0 10px 30px rgba(0,0,0,.35);
 }
 
 /* Respect system preference when no theme is set */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg:#0d1117;
-    --text:#e6edf3;
-    --muted:#8b949e;
-    --link:#58a6ff;
-    --border:#30363d;
-    --card-bg:#161b22;
-    --shadow: 0 4px 16px rgba(0,0,0,.4);
+    --bg:#11100e;
+    --text:#eee7dd;
+    --muted:#afa397;
+    --link:#d6a066;
+    --border:#342c24;
+    --card-bg:#1a1714;
+    --soft-bg:#211c17;
+    --shadow: 0 10px 30px rgba(0,0,0,.35);
   }
 }
 
@@ -46,17 +49,18 @@ body{
   font-family: var(--sans);
   background: var(--bg);
   color: var(--text);
-  line-height:1.6;
+  font-size: 15.5px;
+  line-height:1.62;
 }
 
-a{ color:var(--link); text-decoration:none; }
+a{ color:var(--link); text-decoration:none; text-underline-offset: 0.18em; }
 a:hover{ text-decoration:underline; }
 
 .container{
   width:100%;
   max-width: calc(var(--max) + var(--sidebar));
   margin: 0 auto;
-  padding: 36px 20px 60px;
+  padding: 28px 20px 56px;
   position: relative;
 }
 
@@ -65,7 +69,7 @@ a:hover{ text-decoration:underline; }
   align-items:center;
   justify-content:space-between;
   gap:20px;
-  margin-bottom: 28px;
+  margin-bottom: 18px;
 }
 
 .brand{
@@ -94,12 +98,12 @@ a:hover{ text-decoration:underline; }
 }
 .brand .name{
   font-weight: 800;
-  font-size: 20px;
+  font-size: 18px;
   letter-spacing: -0.02em;
 }
 .brand .tagline{
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12.5px;
   margin-top: -2px;
 }
 
@@ -123,11 +127,81 @@ a:hover{ text-decoration:underline; }
 .main{
   display:grid;
   grid-template-columns: 1fr var(--sidebar);
-  gap: 28px;
+  gap: 36px;
 }
 
 .content{
   max-width: var(--max);
+}
+
+.profile-strip{
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 22px;
+  align-items: center;
+  margin: 0 0 34px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 4px);
+  background: linear-gradient(135deg, var(--card-bg), var(--soft-bg));
+  box-shadow: var(--shadow);
+}
+
+.profile-photo{
+  width: 132px;
+  aspect-ratio: 4 / 5;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--soft-bg);
+}
+
+.profile-photo img{
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 28%;
+}
+
+.profile-summary{
+  max-width: 660px;
+}
+
+.profile-kicker{
+  color: var(--link);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  line-height: 1.3;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.profile-summary p{
+  margin: 0;
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.profile-meta{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.profile-meta span{
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--card-bg) 80%, transparent);
+  font-size: 12px;
+  line-height: 1.3;
 }
 
 /* Page title — replaces inline h1 styles across pages */
@@ -158,22 +232,19 @@ a:hover{ text-decoration:underline; }
 
 
 .hero{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap: 24px;
-  margin-top: 12px;
+  display:block;
+  margin-top: 0;
 }
 .hero h1{
-  margin:0 0 10px;
-  font-size: 36px;
+  margin:0 0 12px;
+  font-size: clamp(30px, 4vw, 34px);
   line-height:1.15;
   letter-spacing: -0.03em;
 }
 .hero p{
-  margin: 8px 0;
+  margin: 9px 0;
   color: var(--muted);
-  font-size: 18px;
+  font-size: 15.5px;
 }
 .hero .card{
   width: 220px;
@@ -206,12 +277,12 @@ a:hover{ text-decoration:underline; }
 }
 
 .section{
-  margin: 24px 0;
-  padding-top: 4px;
+  margin: 26px 0;
+  padding-top: 2px;
 }
 .section h2{
   margin: 0 0 10px;
-  font-size: 18px;
+  font-size: 17px;
   letter-spacing: -0.01em;
 }
 .section p, .section li{
@@ -245,7 +316,7 @@ hr.sep{
 .list li:last-child{ border-bottom: 0; }
 .list .meta{
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12.5px;
 }
 .badges{
   display:flex;
@@ -295,7 +366,7 @@ hr.sep{
 .nav li{ margin: 8px 0; }
 .nav a{
   display:inline-block;
-  font-size: 14px;
+  font-size: 13.5px;
   color: var(--text);
 }
 .nav a.active{
@@ -315,7 +386,7 @@ hr.sep{
 .footer{
   margin-top: 32px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12.5px;
 }
 .footer code{
   font-family: var(--mono);
@@ -327,9 +398,9 @@ hr.sep{
 
 /* Standalone gap block (used on about page and problem cards) */
 .gap {
-  background: var(--card-bg);
+  background: var(--soft-bg);
   border-left: 3px solid var(--link);
-  padding: 12px 16px;
+  padding: 10px 14px;
   margin: 16px 0;
   border-radius: 0 var(--radius) var(--radius) 0;
 }
@@ -577,6 +648,49 @@ hr.sep{
   }
   .hero{ flex-direction: column; }
   .hero .card{ width: min(320px, 100%); }
+}
+
+@media (max-width: 640px){
+  .container{
+    padding: 22px 16px 48px;
+  }
+  .profile-strip{
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 14px;
+    padding: 12px;
+    margin-bottom: 26px;
+  }
+  .profile-photo{
+    width: 96px;
+    border-radius: 10px;
+  }
+  .profile-summary p{
+    font-size: 14.5px;
+  }
+  .profile-kicker{
+    font-size: 10.5px;
+    letter-spacing: .06em;
+  }
+  .profile-meta{
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .profile-meta span{
+    font-size: 11.5px;
+  }
+  .hero h1{
+    font-size: 29px;
+  }
+}
+
+@media (max-width: 460px){
+  .profile-strip{
+    grid-template-columns: 1fr;
+  }
+  .profile-photo{
+    width: min(180px, 100%);
+    aspect-ratio: 1 / 1;
+  }
 }
 
 /* Essay Filters */
