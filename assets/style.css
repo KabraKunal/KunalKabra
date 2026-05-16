@@ -4,7 +4,7 @@
   --bg:#fbfaf7;
   --text:#171717;
   --muted:#66615a;
-  --link:#8a4b22;
+  --link:#1e3a5f;
   --border:#e6ded2;
   --card-bg:#ffffff;
   --soft-bg:#f4efe7;
@@ -21,7 +21,7 @@
   --bg:#11100e;
   --text:#ffffff;
   --muted:#ffffff;
-  --link:#d6a066;
+  --link:#7fb3d5;
   --border:#342c24;
   --card-bg:#1a1714;
   --soft-bg:#211c17;
@@ -34,7 +34,7 @@
     --bg:#11100e;
     --text:#ffffff;
     --muted:#ffffff;
-    --link:#d6a066;
+    --link:#7fb3d5;
     --border:#342c24;
     --card-bg:#1a1714;
     --soft-bg:#211c17;
@@ -210,6 +210,11 @@ a:hover{ text-decoration:underline; }
   font-size: 36px;
   letter-spacing: -0.03em;
   line-height: 1.15;
+}
+
+.page-intro {
+  max-width: 680px;
+  margin: 0 0 22px;
 }
 
 .avatar {
@@ -742,6 +747,14 @@ hr.sep{
   font-weight: 600;
 }
 
+.filter-btn.keyboard-selected,
+.filter-btn:focus-visible {
+  border-color: var(--link);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--link) 22%, transparent);
+  color: var(--text);
+  outline: none;
+}
+
 /* Essay List */
 .essay-list {
   list-style: none;
@@ -750,8 +763,9 @@ hr.sep{
 }
 
 .essay-item {
-  padding: 20px 0;
+  padding: 20px 14px;
   border-bottom: 1px solid var(--border);
+  border-radius: var(--radius);
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
@@ -761,6 +775,14 @@ hr.sep{
 
 .essay-item.hidden {
   display: none;
+}
+
+.essay-item.keyboard-selected,
+.essay-item:focus-within {
+  background: var(--card-bg);
+  box-shadow: inset 3px 0 0 var(--link);
+  outline: 1px solid color-mix(in srgb, var(--link) 38%, var(--border));
+  outline-offset: -1px;
 }
 
 .essay-date {
@@ -925,55 +947,62 @@ hr.sep{
 
 /* Problem Cards */
 .problem-card {
-  padding: 24px 0;
-  border-bottom: 1px solid var(--border);
+  padding: 22px;
+  margin: 18px 0;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 4px);
+  background: linear-gradient(135deg, var(--card-bg), color-mix(in srgb, var(--soft-bg) 72%, transparent));
+  box-shadow: var(--shadow);
 }
 .problem-card:last-child {
-  border-bottom: none;
+  border-bottom: 1px solid var(--border);
 }
 .problem-card h3 {
-  margin: 0 0 6px;
-  font-size: 18px;
+  margin: 0 0 8px;
+  font-size: 20px;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
 }
 .problem-card .question {
-  font-size: 15px;
+  font-size: 14.5px;
   color: var(--muted);
   font-style: italic;
-  margin: 0 0 16px;
+  margin: 0 0 18px;
 }
 .problem-card .gap {
-  background: var(--card-bg);
-  border-left: 3px solid var(--link);
-  padding: 12px 16px;
-  margin: 16px 0;
-  border-radius: 0 var(--radius) var(--radius) 0;
+  background: color-mix(in srgb, var(--card-bg) 82%, var(--link));
+  border: 1px solid color-mix(in srgb, var(--link) 34%, var(--border));
+  border-left: 4px solid var(--link);
+  padding: 14px 16px;
+  margin: 18px 0;
+  border-radius: var(--radius);
+  line-height: 1.65;
 }
 .problem-card .gap strong {
   color: var(--text);
 }
 .problem-card h4 {
-  margin: 20px 0 10px;
-  font-size: 14px;
+  margin: 22px 0 10px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--muted);
+  letter-spacing: 0.08em;
+  color: var(--link);
 }
 .problem-card p {
   margin: 0 0 12px;
-  font-size: 15px;
+  font-size: 14.5px;
   line-height: 1.6;
 }
 .problem-card ul {
-  margin: 8px 0 16px;
-  padding-left: 20px;
+  margin: 8px 0 18px;
+  padding-left: 22px;
 }
 .problem-card li {
-  font-size: 14px;
-  line-height: 1.6;
-  margin-bottom: 6px;
+  font-size: 14.5px;
+  line-height: 1.65;
+  margin-bottom: 7px;
   color: var(--text);
 }
 .problem-card .exploring {
