@@ -1034,29 +1034,30 @@ button:focus-visible {
 
 /* Reading / resources */
 .resource-section {
-  margin-top: 30px;
+  margin-top: 22px;
 }
 
 .resource-section-header {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .resource-section-header p {
   margin: 0;
   max-width: 680px;
+  line-height: 1.55;
 }
 
 .resource-list {
   display: grid;
-  gap: 16px;
+  gap: 12px;
 }
 
 .resource-list.compact {
-  gap: 14px;
+  gap: 10px;
 }
 
 .resource-entry {
-  padding: 18px 20px;
+  padding: 14px 16px;
   border: 1px solid var(--border);
   border-radius: calc(var(--radius) + 2px);
   background: linear-gradient(135deg, var(--card-bg), color-mix(in srgb, var(--soft-bg) 76%, transparent));
@@ -1064,7 +1065,7 @@ button:focus-visible {
 }
 
 .resource-entry.featured {
-  padding: 22px;
+  padding: 16px 18px;
 }
 
 .resource-collapsible {
@@ -1074,7 +1075,7 @@ button:focus-visible {
 
 .resource-toggle {
   width: 100%;
-  padding: 18px 20px;
+  padding: 14px 16px;
   border: 0;
   background: transparent;
   color: inherit;
@@ -1083,20 +1084,20 @@ button:focus-visible {
 }
 
 .resource-entry.featured .resource-toggle {
-  padding: 22px;
+  padding: 16px 18px;
 }
 
 .resource-body {
-  padding: 0 20px 20px;
+  padding: 0 16px 14px;
   border-top: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
 }
 
 .resource-entry.featured .resource-body {
-  padding: 0 22px 22px;
+  padding: 0 18px 16px;
 }
 
 .resource-meta {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   color: var(--link);
   font-size: 11px;
   font-weight: 700;
@@ -1105,30 +1106,30 @@ button:focus-visible {
 }
 
 .resource-title {
-  margin: 0 0 6px;
-  font-size: 19px;
-  line-height: 1.28;
+  margin: 0 0 4px;
+  font-size: 18px;
+  line-height: 1.24;
   letter-spacing: -0.02em;
 }
 
 .resource-source {
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 500;
 }
 
 .resource-preview {
   margin: 0;
   color: var(--muted);
-  font-size: 14.5px;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 .resource-toggle-hint {
   display: inline-flex;
   align-items: center;
-  margin-top: 14px;
+  margin-top: 10px;
   color: var(--link);
   font-size: 12px;
   font-weight: 600;
@@ -1137,13 +1138,13 @@ button:focus-visible {
 .resource-note {
   margin: 0;
   color: var(--text);
-  font-size: 15.5px;
-  line-height: 1.72;
+  font-size: 15px;
+  line-height: 1.58;
 }
 
 .future-shelf {
   border-top: 1px solid var(--border);
-  padding-top: 22px;
+  padding-top: 16px;
 }
 
 /* Page Transitions (View Transitions API) */
