@@ -1064,10 +1064,6 @@ button:focus-visible {
   box-shadow: var(--shadow);
 }
 
-.resource-entry.featured {
-  padding: 16px 18px;
-}
-
 .resource-collapsible {
   padding: 0;
   overflow: hidden;
@@ -1083,17 +1079,9 @@ button:focus-visible {
   cursor: pointer;
 }
 
-.resource-entry.featured .resource-toggle {
-  padding: 16px 18px;
-}
-
 .resource-body {
   padding: 0 16px 14px;
   border-top: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
-}
-
-.resource-entry.featured .resource-body {
-  padding: 0 18px 16px;
 }
 
 .resource-meta {
