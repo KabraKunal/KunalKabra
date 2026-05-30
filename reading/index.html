@@ -74,18 +74,30 @@
           </div>
 
           <div class="resource-list" aria-label="Top picks">
-            <article class="resource-entry featured">
-              <div class="resource-meta">Book</div>
-              <h3 class="resource-title">The War Below</h3>
-              <div class="resource-source">Ernest Scheyder</div>
-              <p class="resource-note">Mineral security is not a procurement problem you can buy your way out of. Permits, litigation, and decade-long lead times make supply slow by default. The real lever is engineering the dependency out. This directly feeds the mineral-dependency problem on my Problems page.</p>
+            <article class="resource-entry featured resource-collapsible is-open">
+              <button class="resource-toggle" type="button" aria-expanded="true">
+                <div class="resource-meta">Book</div>
+                <h3 class="resource-title">The War Below</h3>
+                <div class="resource-source">Ernest Scheyder</div>
+                <p class="resource-preview">Supply is slow by default. The deeper lever is engineering the dependency out.</p>
+                <span class="resource-toggle-hint">Hide note</span>
+              </button>
+              <div class="resource-body">
+                <p class="resource-note">Mineral security is not a procurement problem you can buy your way out of. Permits, litigation, and decade-long lead times make supply slow by default. The real lever is engineering the dependency out. This directly feeds the mineral-dependency problem on my Problems page.</p>
+              </div>
             </article>
 
-            <article class="resource-entry featured">
-              <div class="resource-meta">Book</div>
-              <h3 class="resource-title">The Technological Republic</h3>
-              <div class="resource-source">Alexander C. Karp & Nicholas W. Zamiska</div>
-              <p class="resource-note">The most controversial thing I have read recently, and I think largely right. The first half, that the West lost the will to build hard things with the state, is sharp. But the real argument is the prescription: rebuild that engineering-plus-state partnership, aimed at hard technological and defense power, to put the US back on top. You can already see that playbook running in the real world. The mirror image for the East is clear too: you cannot borrow that ecosystem. You build your own and keep backups ready.</p>
+            <article class="resource-entry featured resource-collapsible">
+              <button class="resource-toggle" type="button" aria-expanded="false">
+                <div class="resource-meta">Book</div>
+                <h3 class="resource-title">The Technological Republic</h3>
+                <div class="resource-source">Alexander C. Karp & Nicholas W. Zamiska</div>
+                <p class="resource-preview">You cannot borrow a serious hard-tech ecosystem. You build your own and keep backups ready.</p>
+                <span class="resource-toggle-hint">Read note</span>
+              </button>
+              <div class="resource-body" hidden>
+                <p class="resource-note">The most controversial thing I have read recently, and I think largely right. The first half, that the West lost the will to build hard things with the state, is sharp. But the real argument is the prescription: rebuild that engineering-plus-state partnership, aimed at hard technological and defense power, to put the US back on top. You can already see that playbook running in the real world. The mirror image for the East is clear too: you cannot borrow that ecosystem. You build your own and keep backups ready.</p>
+              </div>
             </article>
           </div>
         </section>
@@ -97,25 +109,43 @@
           </div>
 
           <div class="resource-list compact" aria-label="Current reads">
-            <article class="resource-entry">
-              <div class="resource-meta">Reading now</div>
-              <h3 class="resource-title">Principles</h3>
-              <div class="resource-source">Ray Dalio</div>
-              <p class="resource-note">A curious read. One person's take on a way of living and working.</p>
+            <article class="resource-entry resource-collapsible">
+              <button class="resource-toggle" type="button" aria-expanded="false">
+                <div class="resource-meta">Reading now</div>
+                <h3 class="resource-title">Principles</h3>
+                <div class="resource-source">Ray Dalio</div>
+                <p class="resource-preview">A curious read on one person's way of living and working.</p>
+                <span class="resource-toggle-hint">Read note</span>
+              </button>
+              <div class="resource-body" hidden>
+                <p class="resource-note">A curious read. One person's take on a way of living and working.</p>
+              </div>
             </article>
 
-            <article class="resource-entry">
-              <div class="resource-meta">Reading now</div>
-              <h3 class="resource-title">No Rules Rules</h3>
-              <div class="resource-source">Reed Hastings & Erin Meyer</div>
-              <p class="resource-note">I am reading this while thinking about output-driven versus craft-driven cultures. What an organization gains, and what it quietly loses, when it optimizes for results over the problem-solving itself. Netflix is the extreme case study.</p>
+            <article class="resource-entry resource-collapsible">
+              <button class="resource-toggle" type="button" aria-expanded="false">
+                <div class="resource-meta">Reading now</div>
+                <h3 class="resource-title">No Rules Rules</h3>
+                <div class="resource-source">Reed Hastings & Erin Meyer</div>
+                <p class="resource-preview">A useful lens on what output-driven cultures gain, and what they quietly give up.</p>
+                <span class="resource-toggle-hint">Read note</span>
+              </button>
+              <div class="resource-body" hidden>
+                <p class="resource-note">I am reading this while thinking about output-driven versus craft-driven cultures. What an organization gains, and what it quietly loses, when it optimizes for results over the problem-solving itself. Netflix is the extreme case study.</p>
+              </div>
             </article>
 
-            <article class="resource-entry">
-              <div class="resource-meta">Reading now</div>
-              <h3 class="resource-title">Originals</h3>
-              <div class="resource-source">Adam Grant</div>
-              <p class="resource-note">I built this site to think in public and keep an honest record of what I am working on. Originals is the nudge for the harder half: actually moving from ideas to action.</p>
+            <article class="resource-entry resource-collapsible">
+              <button class="resource-toggle" type="button" aria-expanded="false">
+                <div class="resource-meta">Reading now</div>
+                <h3 class="resource-title">Originals</h3>
+                <div class="resource-source">Adam Grant</div>
+                <p class="resource-preview">A reminder that publishing ideas matters less if they do not move into action.</p>
+                <span class="resource-toggle-hint">Read note</span>
+              </button>
+              <div class="resource-body" hidden>
+                <p class="resource-note">I built this site to think in public and keep an honest record of what I am working on. Originals is the nudge for the harder half: actually moving from ideas to action.</p>
+              </div>
             </article>
           </div>
         </section>
@@ -173,6 +203,7 @@
   </script>
 </body>
 </html>
+
 
 
 

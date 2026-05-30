@@ -1067,6 +1067,34 @@ button:focus-visible {
   padding: 22px;
 }
 
+.resource-collapsible {
+  padding: 0;
+  overflow: hidden;
+}
+
+.resource-toggle {
+  width: 100%;
+  padding: 18px 20px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.resource-entry.featured .resource-toggle {
+  padding: 22px;
+}
+
+.resource-body {
+  padding: 0 20px 20px;
+  border-top: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+}
+
+.resource-entry.featured .resource-body {
+  padding: 0 22px 22px;
+}
+
 .resource-meta {
   margin-bottom: 8px;
   color: var(--link);
@@ -1088,6 +1116,22 @@ button:focus-visible {
   color: var(--muted);
   font-size: 14px;
   font-weight: 500;
+}
+
+.resource-preview {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+.resource-toggle-hint {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 14px;
+  color: var(--link);
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .resource-note {

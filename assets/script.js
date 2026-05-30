@@ -379,6 +379,40 @@
       focusNav(base + (e.key === 'ArrowDown' ? 1 : -1));
     }
   });
+
+  // Reading page expandable resource cards
+  const resourceToggles = Array.from(document.querySelectorAll('.resource-toggle'));
+  if (resourceToggles.length > 0) {
+    function setResourceState(toggle, expanded) {
+      const card = toggle.closest('.resource-collapsible');
+      const body = card && card.querySelector('.resource-body');
+      const hint = card && card.querySelector('.resource-toggle-hint');
+      if (!card || !body) return;
+
+      toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      card.classList.toggle('is-open', expanded);
+      body.hidden = !expanded;
+      if (hint) hint.textContent = expanded ? 'Hide note' : 'Read note';
+    }
+
+    resourceToggles.forEach((toggle, index) => {
+      toggle.addEventListener('click', () => {
+        const expanded = toggle.getAttribute('aria-expanded') === 'true';
+        setResourceState(toggle, !expanded);
+      });
+
+      toggle.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          resourceToggles[(index + 1) % resourceToggles.length].focus();
+        }
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          resourceToggles[(index - 1 + resourceToggles.length) % resourceToggles.length].focus();
+        }
+      });
+    });
+  }
 })();
 
 // Command Palette
