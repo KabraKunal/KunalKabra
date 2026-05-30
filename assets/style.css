@@ -1032,6 +1032,76 @@ button:focus-visible {
   color: var(--text);
 }
 
+/* Reading / resources */
+.resource-section {
+  margin-top: 30px;
+}
+
+.resource-section-header {
+  margin-bottom: 16px;
+}
+
+.resource-section-header p {
+  margin: 0;
+  max-width: 680px;
+}
+
+.resource-list {
+  display: grid;
+  gap: 16px;
+}
+
+.resource-list.compact {
+  gap: 14px;
+}
+
+.resource-entry {
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 2px);
+  background: linear-gradient(135deg, var(--card-bg), color-mix(in srgb, var(--soft-bg) 76%, transparent));
+  box-shadow: var(--shadow);
+}
+
+.resource-entry.featured {
+  padding: 22px;
+}
+
+.resource-meta {
+  margin-bottom: 8px;
+  color: var(--link);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.resource-title {
+  margin: 0 0 6px;
+  font-size: 19px;
+  line-height: 1.28;
+  letter-spacing: -0.02em;
+}
+
+.resource-source {
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.resource-note {
+  margin: 0;
+  color: var(--text);
+  font-size: 15.5px;
+  line-height: 1.72;
+}
+
+.future-shelf {
+  border-top: 1px solid var(--border);
+  padding-top: 22px;
+}
+
 /* Page Transitions (View Transitions API) */
 @view-transition {
   navigation: auto;
