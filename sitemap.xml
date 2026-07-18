@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>/</loc></url>
-  <url><loc>/projects/</loc></url>
-  <url><loc>/reading/</loc></url>
-  <url><loc>/essays/</loc></url>
-  <url><loc>/essays/why-moats-matter/</loc></url>
-  <url><loc>/essays/last-mile-manufacturing/</loc></url>
-  <url><loc>/essays/agency-and-leverage/</loc></url>
-  <url><loc>/essays/learning-notes/</loc></url>
+  <url><loc>https://kunalkabra.com/</loc></url>
+  <url><loc>https://kunalkabra.com/essays/</loc></url>
+  <url><loc>https://kunalkabra.com/projects/</loc></url>
+  <url><loc>https://kunalkabra.com/reading/</loc></url>
+  <url><loc>https://kunalkabra.com/essays/why-moats-matter/</loc></url>
+  <url><loc>https://kunalkabra.com/essays/last-mile-manufacturing/</loc></url>
+  <url><loc>https://kunalkabra.com/essays/agency-and-leverage/</loc></url>
+  <url><loc>https://kunalkabra.com/essays/learning-notes/</loc></url>
 </urlset>

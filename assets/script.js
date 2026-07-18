@@ -1,243 +1,138 @@
-(function () {
-  // Theme toggle functionality
-  const themeToggle = document.getElementById('theme-toggle');
-  const html = document.documentElement;
+/* ============================================================
+   Kunal Kabra — site behaviour
+   Theme toggle · nav highlight · essay filtering (+ keyboard) ·
+   keyboard shortcuts · collapsible reading cards · command palette
+   ============================================================ */
 
-  // Get saved theme or detect system preference
+(function () {
+  const html = document.documentElement;
+  const themeToggle = document.getElementById('theme-toggle');
+
+  /* ---------- Theme ---------- */
   function getPreferredTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      return savedTheme;
-    }
+    const saved = localStorage.getItem('theme');
+    if (saved) return saved;
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
-
-  // Apply theme to document
   function setTheme(theme) {
     html.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
-
-    // Update toggle button visual state
-    if (themeToggle) {
-      if (theme === 'dark') {
-        themeToggle.classList.add('dark');
-      } else {
-        themeToggle.classList.remove('dark');
-      }
-    }
   }
-
-  // Initialize theme on page load
   setTheme(getPreferredTheme());
 
-  // Toggle theme on button click
   if (themeToggle) {
     themeToggle.addEventListener('click', () => {
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      setTheme(newTheme);
+      setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
     });
   }
-
-  // Listen for system theme changes
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-    // Only auto-switch if user hasn't manually set a preference
-    if (!localStorage.getItem('theme')) {
-      setTheme(e.matches ? 'dark' : 'light');
-    }
+    if (!localStorage.getItem('theme')) setTheme(e.matches ? 'dark' : 'light');
   });
 
-  // Highlight current nav link based on path
-  const path = window.location.pathname.replace(/\/+$/, "");
-  const links = document.querySelectorAll(".nav a");
-  links.forEach(a => {
-    const href = a.getAttribute("href");
-    if (!href) return;
-
-    const normalizedHref = href.replace(/\/+$/, "");
-    const isIndex = (path === "" || path.endsWith("/index.html")) && (normalizedHref === "index.html" || normalizedHref === "/");
-    const matches = path.endsWith(normalizedHref);
-
-    if (matches || isIndex) a.classList.add("active");
+  /* ---------- Active nav link ---------- */
+  const path = window.location.pathname.replace(/\/+$/, '');
+  document.querySelectorAll('.site-nav a').forEach((a) => {
+    const href = a.getAttribute('href');
+    if (!href || href.startsWith('mailto') || href.startsWith('http')) return;
+    const norm = href.replace(/\/+$/, '').replace(/^\.\//, '').replace(/^\.\.\//, '');
+    if (norm && path.endsWith(norm)) a.classList.add('active');
   });
 
-  // Essay filtering + keyboard-first navigation
+  /* ---------- Essay filtering + keyboard-first navigation ---------- */
   const filterBtns = Array.from(document.querySelectorAll('.filter-btn'));
   if (filterBtns.length > 0) {
     const essayItems = Array.from(document.querySelectorAll('.essay-item'));
-    let filterIndex = Math.max(0, filterBtns.findIndex(btn => btn.classList.contains('active')));
+    let filterIndex = Math.max(0, filterBtns.findIndex((b) => b.classList.contains('active')));
     let essayIndex = -1;
-    let keyboardZone = 'filters';
+    let zone = 'filters';
 
-    function isTypingInField() {
-      const tag = document.activeElement && document.activeElement.tagName;
-      return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' ||
+    const typing = () => {
+      const t = document.activeElement && document.activeElement.tagName;
+      return t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT' ||
         (document.activeElement && document.activeElement.isContentEditable);
-    }
-
-    function visibleEssays() {
-      return essayItems.filter(item => !item.classList.contains('hidden'));
-    }
-
-    function clearKeyboardSelection() {
-      filterBtns.forEach(btn => btn.classList.remove('keyboard-selected'));
-      essayItems.forEach(item => item.classList.remove('keyboard-selected'));
-    }
-
-    function selectFilter(index, shouldFocus) {
-      filterIndex = (index + filterBtns.length) % filterBtns.length;
-      keyboardZone = 'filters';
-      clearKeyboardSelection();
+    };
+    const visible = () => essayItems.filter((i) => !i.classList.contains('hidden'));
+    const clearSel = () => {
+      filterBtns.forEach((b) => b.classList.remove('keyboard-selected'));
+      essayItems.forEach((i) => i.classList.remove('keyboard-selected'));
+    };
+    function selectFilter(i, focus) {
+      filterIndex = (i + filterBtns.length) % filterBtns.length;
+      zone = 'filters'; clearSel();
       filterBtns[filterIndex].classList.add('keyboard-selected');
-      if (shouldFocus) filterBtns[filterIndex].focus({ preventScroll: true });
+      if (focus) filterBtns[filterIndex].focus({ preventScroll: true });
     }
-
-    function selectEssay(index, shouldFocus) {
-      const visible = visibleEssays();
-      if (visible.length === 0) return;
-      essayIndex = (index + visible.length) % visible.length;
-      keyboardZone = 'essays';
-      clearKeyboardSelection();
-      const selected = visible[essayIndex];
-      selected.classList.add('keyboard-selected');
-      selected.scrollIntoView({ block: 'nearest' });
-      const link = selected.querySelector('.essay-title a');
-      if (shouldFocus && link) link.focus({ preventScroll: true });
+    function selectEssay(i, focus) {
+      const v = visible(); if (!v.length) return;
+      essayIndex = (i + v.length) % v.length;
+      zone = 'essays'; clearSel();
+      const sel = v[essayIndex];
+      sel.classList.add('keyboard-selected');
+      sel.scrollIntoView({ block: 'nearest' });
+      const link = sel.querySelector('.essay-title a');
+      if (focus && link) link.focus({ preventScroll: true });
     }
-
     function applyFilter(btn) {
-      const filter = btn.dataset.filter;
-      filterBtns.forEach(b => {
-        b.classList.remove('active');
-        b.setAttribute('aria-pressed', 'false');
+      const f = btn.dataset.filter;
+      filterBtns.forEach((b) => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
+      btn.classList.add('active'); btn.setAttribute('aria-pressed', 'true');
+      essayItems.forEach((item) => {
+        const tags = (item.dataset.tags || '').split(' ');
+        item.classList.toggle('hidden', f !== 'all' && !tags.includes(f));
       });
-      btn.classList.add('active');
-      btn.setAttribute('aria-pressed', 'true');
-
-      essayItems.forEach(item => {
-        const tags = item.dataset.tags.split(' ');
-        item.classList.toggle('hidden', filter !== 'all' && !tags.includes(filter));
-      });
-
       essayIndex = -1;
     }
 
-    filterBtns.forEach((btn, index) => {
+    filterBtns.forEach((btn, i) => {
       btn.setAttribute('aria-pressed', btn.classList.contains('active') ? 'true' : 'false');
-      btn.addEventListener('click', () => {
-        filterIndex = index;
-        keyboardZone = 'filters';
-        clearKeyboardSelection();
-        applyFilter(btn);
-      });
-      btn.addEventListener('focus', () => {
-        filterIndex = index;
-        keyboardZone = 'filters';
-      });
+      btn.addEventListener('click', () => { filterIndex = i; zone = 'filters'; clearSel(); applyFilter(btn); });
+      btn.addEventListener('focus', () => { filterIndex = i; zone = 'filters'; });
     });
-
-    essayItems.forEach((item, index) => {
+    essayItems.forEach((item, i) => {
       const link = item.querySelector('.essay-title a');
       if (!link) return;
       link.addEventListener('focus', () => {
-        const visible = visibleEssays();
-        const visibleIndex = visible.indexOf(item);
-        if (visibleIndex >= 0) {
-          essayIndex = visibleIndex;
-          keyboardZone = 'essays';
-          clearKeyboardSelection();
-          item.classList.add('keyboard-selected');
-        }
+        const vi = visible().indexOf(item);
+        if (vi >= 0) { essayIndex = vi; zone = 'essays'; clearSel(); item.classList.add('keyboard-selected'); }
       });
-      link.addEventListener('blur', () => {
-        if (essayItems[index]) essayItems[index].classList.remove('keyboard-selected');
-      });
+      link.addEventListener('blur', () => essayItems[i] && essayItems[i].classList.remove('keyboard-selected'));
     });
 
     document.addEventListener('keydown', (e) => {
-      if (document.body.classList.contains('cmd-open') || isTypingInField()) return;
+      if (document.body.classList.contains('cmd-open') || typing()) return;
+      if (!(document.querySelector('.essay-list') && document.querySelector('.essay-filters'))) return;
+      const onFilter = filterBtns.includes(document.activeElement);
+      const onEssay = document.activeElement && document.activeElement.closest && document.activeElement.closest('.essay-item');
 
-      const activeIsFilter = filterBtns.includes(document.activeElement);
-      const activeEssayItem = document.activeElement && document.activeElement.closest && document.activeElement.closest('.essay-item');
-      const onEssaysPage = document.querySelector('.essay-list') && document.querySelector('.essay-filters');
-      if (!onEssaysPage) return;
-
-      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-        e.preventDefault();
-        selectFilter(filterIndex + (e.key === 'ArrowRight' ? 1 : -1), true);
-        return;
-      }
-
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        if (keyboardZone === 'filters' || activeIsFilter || essayIndex < 0) {
-          selectEssay(0, true);
-        } else {
-          selectEssay(essayIndex + 1, true);
-        }
-        return;
-      }
-
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); selectFilter(filterIndex + (e.key === 'ArrowRight' ? 1 : -1), true); return; }
+      if (e.key === 'ArrowDown') { e.preventDefault(); (zone === 'filters' || onFilter || essayIndex < 0) ? selectEssay(0, true) : selectEssay(essayIndex + 1, true); return; }
       if (e.key === 'ArrowUp') {
         e.preventDefault();
-        if (keyboardZone === 'essays' || activeEssayItem) {
-          if (essayIndex <= 0) selectFilter(filterIndex, true);
-          else selectEssay(essayIndex - 1, true);
-        } else {
-          selectFilter(filterIndex, true);
-        }
+        if (zone === 'essays' || onEssay) { essayIndex <= 0 ? selectFilter(filterIndex, true) : selectEssay(essayIndex - 1, true); }
+        else selectFilter(filterIndex, true);
         return;
       }
-
-      if (e.key === 'Home') {
-        e.preventDefault();
-        keyboardZone === 'essays' ? selectEssay(0, true) : selectFilter(0, true);
-        return;
+      if (e.key === 'Home') { e.preventDefault(); zone === 'essays' ? selectEssay(0, true) : selectFilter(0, true); return; }
+      if (e.key === 'End') { e.preventDefault(); zone === 'essays' ? selectEssay(visible().length - 1, true) : selectFilter(filterBtns.length - 1, true); return; }
+      if ((e.key === 'Enter' || e.key === ' ') && zone === 'filters') { e.preventDefault(); applyFilter(filterBtns[filterIndex]); selectFilter(filterIndex, true); return; }
+      if (e.key === 'Enter' && zone === 'essays') {
+        const sel = visible()[essayIndex]; const link = sel && sel.querySelector('.essay-title a');
+        if (link) { e.preventDefault(); link.click(); } return;
       }
-
-      if (e.key === 'End') {
-        e.preventDefault();
-        keyboardZone === 'essays' ? selectEssay(visibleEssays().length - 1, true) : selectFilter(filterBtns.length - 1, true);
-        return;
-      }
-
-      if ((e.key === 'Enter' || e.key === ' ') && keyboardZone === 'filters') {
-        e.preventDefault();
-        applyFilter(filterBtns[filterIndex]);
-        selectFilter(filterIndex, true);
-        return;
-      }
-
-      if (e.key === 'Enter' && keyboardZone === 'essays') {
-        const visible = visibleEssays();
-        const selected = visible[essayIndex];
-        const link = selected && selected.querySelector('.essay-title a');
-        if (link) {
-          e.preventDefault();
-          link.click();
-        }
-        return;
-      }
-
-      if (e.key === 'Escape') {
-        clearKeyboardSelection();
-        essayIndex = -1;
-        keyboardZone = 'filters';
-      }
+      if (e.key === 'Escape') { clearSel(); essayIndex = -1; zone = 'filters'; }
     });
   }
 
-  // Keyboard-first site navigation, inspired by Notion-style shortcuts
+  /* ---------- Keyboard shortcuts + help ---------- */
   function isTypingContext() {
-    const tag = document.activeElement && document.activeElement.tagName;
-    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' ||
+    const t = document.activeElement && document.activeElement.tagName;
+    return t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT' ||
       (document.activeElement && document.activeElement.isContentEditable);
   }
 
   function createKeyboardHelp() {
     const existing = document.querySelector('.kbd-help-backdrop');
     if (existing) return existing;
-
     const help = document.createElement('div');
     help.className = 'kbd-help-backdrop';
     help.setAttribute('role', 'dialog');
@@ -250,189 +145,128 @@
           <kbd>/</kbd><span>Open search</span>
           <kbd>?</kbd><span>Show or hide this help</span>
           <kbd>t</kbd><span>Toggle theme</span>
-          <kbd>n</kbd><span>Focus sidebar navigation</span>
-          <kbd>↑ ↓</kbd><span>Move through nav links, essays, or search results</span>
-          <kbd>← →</kbd><span>Move through essay filters</span>
+          <kbd>n</kbd><span>Focus navigation</span>
+          <kbd>&uarr; &darr;</kbd><span>Move through nav links, essays, or search results</span>
+          <kbd>&larr; &rarr;</kbd><span>Move through essay filters</span>
           <kbd>Enter</kbd><span>Open selected item</span>
           <kbd>g h</kbd><span>Go home</span>
-          <kbd>g e</kbd><span>Go essays</span>
-          <kbd>g p</kbd><span>Go problems</span>
-          <kbd>g r</kbd><span>Go reading</span>
-          <kbd>g + l</kbd><span>Go learning notes</span>
+          <kbd>g e</kbd><span>Go to essays</span>
+          <kbd>g p</kbd><span>Go to problems</span>
+          <kbd>g r</kbd><span>Go to reading</span>
+          <kbd>g l</kbd><span>Go to learning notes</span>
           <kbd>Esc</kbd><span>Close overlay or clear selection</span>
         </div>
-        <div class="kbd-help-footer">These shortcuts are disabled while typing in inputs.</div>
+        <div class="kbd-help-footer">Shortcuts are disabled while typing in inputs.</div>
       </div>`;
     document.body.appendChild(help);
-    help.addEventListener('click', (e) => {
-      if (e.target === help) help.classList.remove('open');
-    });
+    help.addEventListener('click', (e) => { if (e.target === help) help.classList.remove('open'); });
     return help;
   }
 
   const keyboardHelp = createKeyboardHelp();
-  let goPrefixActive = false;
-  let goPrefixTimer = null;
-  let navIndex = -1;
-
+  let goPrefix = false, goTimer = null, navIndex = -1;
   function setGoPrefix(active) {
-    goPrefixActive = active;
-    clearTimeout(goPrefixTimer);
-    if (active) {
-      goPrefixTimer = setTimeout(() => { goPrefixActive = false; }, 1400);
-    }
+    goPrefix = active; clearTimeout(goTimer);
+    if (active) goTimer = setTimeout(() => { goPrefix = false; }, 1400);
   }
-
-  function siteUrl(path) {
-    const marker = '/KunalKabra/';
-    const href = window.location.href;
-    const idx = href.indexOf(marker);
-    if (idx >= 0) {
-      return href.slice(0, idx + marker.length) + path.replace(/^\//, '');
-    }
-    return path;
-  }
-
+  function siteUrl(p) { return '/' + String(p).replace(/^\//, ''); }
   function goTo(key) {
-    const routes = {
-      h: '',
-      e: 'essays/',
-      p: 'projects/',
-      r: 'reading/',
-      l: 'essays/learning-notes/'
-    };
+    const routes = { h: '', e: 'essays/', p: 'projects/', r: 'reading/', l: 'essays/learning-notes/' };
     if (routes[key] !== undefined) window.location.href = siteUrl(routes[key]);
   }
-
-  function navLinks() {
-    return Array.from(document.querySelectorAll('.nav a'));
-  }
-
-  function clearNavSelection() {
-    navLinks().forEach(link => link.classList.remove('keyboard-selected'));
-  }
-
-  function focusNav(index) {
-    const links = navLinks();
-    if (!links.length) return;
-    navIndex = (index + links.length) % links.length;
-    clearNavSelection();
+  const navLinks = () => Array.from(document.querySelectorAll('.site-nav a'));
+  function focusNav(i) {
+    const links = navLinks(); if (!links.length) return;
+    navIndex = (i + links.length) % links.length;
+    links.forEach((l) => l.classList.remove('keyboard-selected'));
     links[navIndex].classList.add('keyboard-selected');
     links[navIndex].focus({ preventScroll: true });
   }
 
   document.addEventListener('keydown', (e) => {
     if (isTypingContext() || document.body.classList.contains('cmd-open')) return;
-
     const helpOpen = keyboardHelp.classList.contains('open');
+
     if (e.key === 'Escape') {
       e.preventDefault();
       if (helpOpen) keyboardHelp.classList.remove('open');
-      clearNavSelection();
+      navLinks().forEach((l) => l.classList.remove('keyboard-selected'));
       setGoPrefix(false);
       return;
     }
-
-    if (e.key === '?') {
-      e.preventDefault();
-      keyboardHelp.classList.toggle('open');
-      return;
-    }
-
+    if (e.key === '?') { e.preventDefault(); keyboardHelp.classList.toggle('open'); return; }
     if (helpOpen) return;
 
-    if (goPrefixActive) {
-      const key = e.key.toLowerCase();
-      setGoPrefix(false);
-      if ('heprl'.includes(key)) {
-        e.preventDefault();
-        goTo(key);
-      }
+    if (goPrefix) {
+      const k = e.key.toLowerCase(); setGoPrefix(false);
+      if ('heprl'.includes(k)) { e.preventDefault(); goTo(k); }
       return;
     }
+    if (e.key.toLowerCase() === 'g' && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); setGoPrefix(true); return; }
+    if (e.key.toLowerCase() === 't' && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); return; }
+    if (e.key.toLowerCase() === 'n' && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); focusNav(navIndex >= 0 ? navIndex : 0); return; }
 
-    if (e.key.toLowerCase() === 'g' && !e.metaKey && !e.ctrlKey && !e.altKey) {
-      e.preventDefault();
-      setGoPrefix(true);
-      return;
-    }
-
-    if (e.key.toLowerCase() === 't' && !e.metaKey && !e.ctrlKey && !e.altKey) {
-      e.preventDefault();
-      const currentTheme = html.getAttribute('data-theme');
-      setTheme(currentTheme === 'dark' ? 'light' : 'dark');
-      return;
-    }
-
-    if (e.key.toLowerCase() === 'n' && !e.metaKey && !e.ctrlKey && !e.altKey) {
-      e.preventDefault();
-      focusNav(navIndex >= 0 ? navIndex : 0);
-      return;
-    }
-
-    const activeInNav = document.activeElement && document.activeElement.closest && document.activeElement.closest('.navbox');
-    if (activeInNav && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+    const inNav = document.activeElement && document.activeElement.closest && document.activeElement.closest('.site-nav');
+    if (inNav && (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
       e.preventDefault();
       const links = navLinks();
-      const current = links.indexOf(document.activeElement);
-      const base = current >= 0 ? current : Math.max(navIndex, 0);
-      focusNav(base + (e.key === 'ArrowDown' ? 1 : -1));
+      const cur = links.indexOf(document.activeElement);
+      const base = cur >= 0 ? cur : Math.max(navIndex, 0);
+      focusNav(base + (e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : -1));
     }
   });
 
-  // Reading page expandable resource cards
-  const resourceToggles = Array.from(document.querySelectorAll('.resource-toggle'));
-  if (resourceToggles.length > 0) {
-    function setResourceState(toggle, expanded) {
-      const card = toggle.closest('.resource-collapsible');
+  /* ---------- Collapsible reading cards ---------- */
+  const toggles = Array.from(document.querySelectorAll('.resource-toggle'));
+  if (toggles.length) {
+    function setState(toggle, open) {
+      const card = toggle.closest('.resource-entry');
       const body = card && card.querySelector('.resource-body');
       const hint = card && card.querySelector('.resource-toggle-hint');
       if (!card || !body) return;
-
-      toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-      card.classList.toggle('is-open', expanded);
-      body.hidden = !expanded;
-      if (hint) hint.textContent = expanded ? 'Hide note' : 'Read note';
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      card.classList.toggle('is-open', open);
+      body.hidden = !open;
+      if (hint) hint.textContent = open ? 'Hide note' : 'Read note';
     }
-
-    resourceToggles.forEach((toggle, index) => {
-      toggle.addEventListener('click', () => {
-        const expanded = toggle.getAttribute('aria-expanded') === 'true';
-        setResourceState(toggle, !expanded);
-      });
-
+    toggles.forEach((toggle, i) => {
+      toggle.addEventListener('click', () => setState(toggle, toggle.getAttribute('aria-expanded') !== 'true'));
       toggle.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowDown') {
-          e.preventDefault();
-          resourceToggles[(index + 1) % resourceToggles.length].focus();
-        }
-        if (e.key === 'ArrowUp') {
-          e.preventDefault();
-          resourceToggles[(index - 1 + resourceToggles.length) % resourceToggles.length].focus();
-        }
+        if (e.key === 'ArrowDown') { e.preventDefault(); toggles[(i + 1) % toggles.length].focus(); }
+        if (e.key === 'ArrowUp') { e.preventDefault(); toggles[(i - 1 + toggles.length) % toggles.length].focus(); }
       });
     });
   }
+
+  /* ---------- View counter (GoatCounter) ---------- */
+  const countEl = document.getElementById('view-count');
+  if (countEl) {
+    fetch('https://kunalkabra.goatcounter.com/counter/TOTAL.json')
+      .then((r) => r.json())
+      .then((d) => { if (d && d.count) countEl.textContent = parseInt(d.count, 10).toLocaleString(); })
+      .catch(() => {});
+  }
 })();
 
-// Command Palette
-(function() {
-  var commands = [
-    { group: 'Pages', title: 'Home', subtitle: 'Who I am, what I\'m working on, and where to start', url: '/', icon: 'home' },
-    { group: 'Pages', title: 'Essays', subtitle: 'All essays and articles', url: '/essays', icon: 'file-text' },
-    { group: 'Pages', title: 'Projects', subtitle: 'Problems I\'m exploring', url: '/projects', icon: 'box' },
-    { group: 'Pages', title: 'Reading', subtitle: 'Books and resources', url: '/reading', icon: 'book' },
-    { group: 'Essays', title: 'Why Moats Matter More Than Innovation', subtitle: 'On durable competitive advantage', url: '/essays/why-moats-matter', icon: 'essay' },
-    { group: 'Essays', title: 'The Last-Mile Problem in Indian Manufacturing', subtitle: 'India\'s execution gap', url: '/essays/last-mile-manufacturing', icon: 'essay' },
-    { group: 'Essays', title: 'Agency and Leverage: Building Compounding Systems', subtitle: 'How individuals compound', url: '/essays/agency-and-leverage', icon: 'essay' },
-    { group: 'Essays', title: 'Learning Notes', subtitle: 'Notes on what I\'m studying', url: '/essays/learning-notes', icon: 'essay' },
-    { group: 'Contact', title: 'Send Email', subtitle: 'kunal.kabra.iitb@gmail.com', url: 'mailto:kunal.kabra.iitb@gmail.com', icon: 'mail' },
+/* ============================================================
+   Command palette (/ to open)
+   ============================================================ */
+(function () {
+  const commands = [
+    { group: 'Pages', title: 'Home', subtitle: "Who I am and where to start", url: '/', icon: 'home' },
+    { group: 'Pages', title: 'Essays', subtitle: 'All essays and articles', url: '/essays/', icon: 'file-text' },
+    { group: 'Pages', title: 'Problems', subtitle: "Problems I'm exploring", url: '/projects/', icon: 'box' },
+    { group: 'Pages', title: 'Reading', subtitle: 'Books and resources', url: '/reading/', icon: 'book' },
+    { group: 'Essays', title: 'Why Moats Matter More Than Innovation', subtitle: 'On durable competitive advantage', url: '/essays/why-moats-matter/', icon: 'essay' },
+    { group: 'Essays', title: 'The Last-Mile Problem in Indian Manufacturing', subtitle: "India's execution gap", url: '/essays/last-mile-manufacturing/', icon: 'essay' },
+    { group: 'Essays', title: 'Agency and Leverage: Building Compounding Systems', subtitle: 'How individuals compound', url: '/essays/agency-and-leverage/', icon: 'essay' },
+    { group: 'Essays', title: 'Learning Notes', subtitle: "Notes on what I'm studying", url: '/essays/learning-notes/', icon: 'essay' },
+    { group: 'Contact', title: 'Send email', subtitle: 'kunal.kabra.iitb@gmail.com', url: 'mailto:kunal.kabra.iitb@gmail.com', icon: 'mail' },
     { group: 'Contact', title: 'LinkedIn', subtitle: 'linkedin.com/in/kunal-kabra', url: 'https://www.linkedin.com/in/kunal-kabra', icon: 'link', external: true },
   ];
 
-  var svgPaths = {
+  const svgPaths = {
     'home': '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline>',
-    'user': '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>',
     'file-text': '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line>',
     'box': '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>',
     'book': '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 0 3-3h7z"></path>',
@@ -442,28 +276,16 @@
     'search': '<circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>',
     'arrow-right': '<line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>',
   };
-
-  function icon(name) {
-    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (svgPaths[name] || svgPaths['essay']) + '</svg>';
+  const icon = (n) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (svgPaths[n] || svgPaths.essay) + '</svg>';
+  function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+  function highlight(text, q) {
+    if (!q) return esc(text);
+    const e = esc(text);
+    const qe = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return e.replace(new RegExp('(' + qe + ')', 'gi'), '<mark class="cmd-highlight">$1</mark>');
   }
 
-  // Escape HTML to prevent XSS
-  function esc(str) {
-    var d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
-  }
-
-  // Highlight matching text in results
-  function highlight(text, query) {
-    if (!query) return esc(text);
-    var escaped = esc(text);
-    var qEsc = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return escaped.replace(new RegExp('(' + qEsc + ')', 'gi'), '<mark class="cmd-highlight">$1</mark>');
-  }
-
-  // Build DOM
-  var backdrop = document.createElement('div');
+  const backdrop = document.createElement('div');
   backdrop.className = 'cmd-backdrop';
   backdrop.setAttribute('role', 'dialog');
   backdrop.setAttribute('aria-modal', 'true');
@@ -472,7 +294,7 @@
     '<div class="cmd-palette">' +
       '<div class="cmd-input-wrap">' +
         '<span class="cmd-input-icon">' + icon('search') + '</span>' +
-        '<input class="cmd-input" type="text" placeholder="Type to search..." autocomplete="off" spellcheck="false" />' +
+        '<input class="cmd-input" type="text" placeholder="Search pages, essays, links..." autocomplete="off" spellcheck="false" />' +
         '<kbd class="cmd-esc-hint">esc</kbd>' +
       '</div>' +
       '<div class="cmd-results" id="cmd-results"></div>' +
@@ -485,173 +307,101 @@
     '</div>';
   document.body.appendChild(backdrop);
 
-  var input = backdrop.querySelector('.cmd-input');
-  var resultsEl = backdrop.querySelector('#cmd-results');
-  var selectedIndex = 0;
-  var filtered = [];
+  const input = backdrop.querySelector('.cmd-input');
+  const resultsEl = backdrop.querySelector('#cmd-results');
+  let selectedIndex = 0, filtered = [];
 
   function openPalette() {
     backdrop.classList.add('open');
     document.body.classList.add('cmd-open');
-    input.value = '';
-    selectedIndex = 0;
-    render('');
-    // Double rAF ensures the palette is visible before focusing
-    requestAnimationFrame(function() {
-      requestAnimationFrame(function() { input.focus(); });
-    });
+    input.value = ''; selectedIndex = 0; render('');
+    requestAnimationFrame(() => requestAnimationFrame(() => input.focus()));
   }
-
   function closePalette() {
     backdrop.classList.remove('open');
     document.body.classList.remove('cmd-open');
+    // Release focus from the (now-hidden) input so global shortcuts work again
+    if (document.activeElement === input) input.blur();
   }
 
   function render(query) {
-    var q = query.trim().toLowerCase();
-    filtered = q
-      ? commands.filter(function(c) {
-          return c.title.toLowerCase().includes(q) ||
-                 c.subtitle.toLowerCase().includes(q) ||
-                 c.group.toLowerCase().includes(q);
-        })
-      : commands;
+    const q = query.trim().toLowerCase();
+    filtered = q ? commands.filter((c) =>
+      c.title.toLowerCase().includes(q) || c.subtitle.toLowerCase().includes(q) || c.group.toLowerCase().includes(q)
+    ) : commands;
 
-    if (filtered.length === 0) {
+    if (!filtered.length) {
       resultsEl.innerHTML =
-        '<div class="cmd-empty">' +
-          '<div class="cmd-empty-icon">' + icon('search') + '</div>' +
-          '<div class="cmd-empty-text">No results for "' + esc(query) + '"</div>' +
-          '<div class="cmd-empty-sub">Try searching for a page, essay, or contact</div>' +
-        '</div>';
-      selectedIndex = -1;
-      return;
+        '<div class="cmd-empty"><div class="cmd-empty-icon">' + icon('search') + '</div>' +
+        '<div class="cmd-empty-text">No results for "' + esc(query) + '"</div>' +
+        '<div class="cmd-empty-sub">Try a page, essay, or contact</div></div>';
+      selectedIndex = -1; return;
     }
-
     if (selectedIndex >= filtered.length) selectedIndex = 0;
 
-    // Group
-    var groups = {};
-    var order = [];
-    filtered.forEach(function(cmd) {
-      if (!groups[cmd.group]) { groups[cmd.group] = []; order.push(cmd.group); }
-      groups[cmd.group].push(cmd);
-    });
+    const groups = {}, order = [];
+    filtered.forEach((c) => { if (!groups[c.group]) { groups[c.group] = []; order.push(c.group); } groups[c.group].push(c); });
 
-    var html = '';
-    var idx = 0;
-    order.forEach(function(group) {
-      html += '<div class="cmd-group-label">' + esc(group) + '</div>';
-      groups[group].forEach(function(cmd) {
-        var sel = idx === selectedIndex;
-        html +=
-          '<a class="cmd-item' + (sel ? ' selected' : '') + '" href="' + cmd.url + '"' +
-          (cmd.external ? ' target="_blank" rel="noopener"' : '') +
-          ' data-idx="' + idx + '">' +
-            '<span class="cmd-item-icon">' + icon(cmd.icon) + '</span>' +
-            '<span class="cmd-item-text">' +
-              '<span class="cmd-item-title">' + highlight(cmd.title, q) + '</span>' +
-              '<span class="cmd-item-subtitle">' + highlight(cmd.subtitle, q) + '</span>' +
-            '</span>' +
-            '<span class="cmd-item-enter">' + icon('arrow-right') + '</span>' +
-          '</a>';
+    let out = '', idx = 0;
+    order.forEach((g) => {
+      out += '<div class="cmd-group-label">' + esc(g) + '</div>';
+      groups[g].forEach((cmd) => {
+        out += '<a class="cmd-item' + (idx === selectedIndex ? ' selected' : '') + '" href="' + cmd.url + '"' +
+          (cmd.external ? ' target="_blank" rel="noopener"' : '') + ' data-idx="' + idx + '">' +
+          '<span class="cmd-item-icon">' + icon(cmd.icon) + '</span>' +
+          '<span class="cmd-item-text"><span class="cmd-item-title">' + highlight(cmd.title, q) + '</span>' +
+          '<span class="cmd-item-subtitle">' + highlight(cmd.subtitle, q) + '</span></span>' +
+          '<span class="cmd-item-enter">' + icon('arrow-right') + '</span></a>';
         idx++;
       });
     });
-
-    resultsEl.innerHTML = html;
-
-    // Use event delegation instead of per-item listeners
+    resultsEl.innerHTML = out;
     updateSelection();
   }
-
   function updateSelection() {
-    var items = resultsEl.querySelectorAll('.cmd-item');
-    items.forEach(function(el, i) {
-      if (parseInt(el.dataset.idx) === selectedIndex) {
-        el.classList.add('selected');
-      } else {
-        el.classList.remove('selected');
-      }
+    resultsEl.querySelectorAll('.cmd-item').forEach((el) => {
+      el.classList.toggle('selected', parseInt(el.dataset.idx, 10) === selectedIndex);
     });
   }
-
-  // Event delegation for mouse hover
-  resultsEl.addEventListener('mousemove', function(e) {
-    var item = e.target.closest('.cmd-item');
-    if (item) {
-      var newIdx = parseInt(item.dataset.idx);
-      if (newIdx !== selectedIndex) {
-        selectedIndex = newIdx;
-        updateSelection();
-      }
-    }
+  resultsEl.addEventListener('mousemove', (e) => {
+    const item = e.target.closest('.cmd-item');
+    if (item) { const n = parseInt(item.dataset.idx, 10); if (n !== selectedIndex) { selectedIndex = n; updateSelection(); } }
   });
-
   function move(dir) {
-    if (filtered.length === 0) return;
+    if (!filtered.length) return;
     selectedIndex = (selectedIndex + dir + filtered.length) % filtered.length;
     updateSelection();
-    var sel = resultsEl.querySelector('.cmd-item.selected');
+    const sel = resultsEl.querySelector('.cmd-item.selected');
     if (sel) sel.scrollIntoView({ block: 'nearest' });
   }
-
   function activate() {
     if (selectedIndex >= 0 && filtered[selectedIndex]) {
-      var cmd = filtered[selectedIndex];
+      const cmd = filtered[selectedIndex];
       closePalette();
-      if (cmd.external) {
-        window.open(cmd.url, '_blank', 'noopener');
-      } else {
-        window.location.href = cmd.url;
-      }
+      if (cmd.external) window.open(cmd.url, '_blank', 'noopener');
+      else window.location.href = cmd.url;
     }
   }
 
-  // Inject search trigger into sidebar nav
-  var navbox = document.querySelector('.navbox');
-  if (navbox) {
-    var hint = document.createElement('div');
-    hint.style.cssText = 'margin-top:14px; padding-top:12px; border-top:1px solid var(--border);';
-    hint.innerHTML = '<button class="cmd-kbd-trigger">' + icon('search') + ' Search<kbd>/</kbd></button>';
-    navbox.appendChild(hint);
-    hint.querySelector('.cmd-kbd-trigger').addEventListener('click', openPalette);
-  }
+  // Wire header search button(s)
+  document.querySelectorAll('[data-search-trigger]').forEach((btn) => btn.addEventListener('click', openPalette));
 
-  function isTyping() {
-    var tag = document.activeElement && document.activeElement.tagName;
-    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' ||
-           (document.activeElement && document.activeElement.isContentEditable);
-  }
+  const isTyping = () => {
+    const t = document.activeElement && document.activeElement.tagName;
+    return t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT' ||
+      (document.activeElement && document.activeElement.isContentEditable);
+  };
 
-  document.addEventListener('keydown', function(e) {
-    var isOpen = backdrop.classList.contains('open');
-
-    if (e.key === '/' && !isTyping() && !e.metaKey && !e.ctrlKey) {
-      e.preventDefault();
-      isOpen ? closePalette() : openPalette();
-      return;
-    }
-
-    if (!isOpen) return;
-
+  document.addEventListener('keydown', (e) => {
+    const open = backdrop.classList.contains('open');
+    if (e.key === '/' && !isTyping() && !e.metaKey && !e.ctrlKey) { e.preventDefault(); open ? closePalette() : openPalette(); return; }
+    if (!open) return;
     if (e.key === 'Escape') { closePalette(); return; }
     if (e.key === 'ArrowDown') { e.preventDefault(); move(1); return; }
     if (e.key === 'ArrowUp') { e.preventDefault(); move(-1); return; }
     if (e.key === 'Enter') { e.preventDefault(); activate(); return; }
-
-    // Any other printable key — make sure input is focused
-    if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && document.activeElement !== input) {
-      input.focus();
-    }
+    if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && document.activeElement !== input) input.focus();
   });
-
-  input.addEventListener('input', function() {
-    selectedIndex = 0;
-    render(input.value);
-  });
-
-  backdrop.addEventListener('click', function(e) {
-    if (e.target === backdrop) closePalette();
-  });
+  input.addEventListener('input', () => { selectedIndex = 0; render(input.value); });
+  backdrop.addEventListener('click', (e) => { if (e.target === backdrop) closePalette(); });
 })();

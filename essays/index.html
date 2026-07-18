@@ -1,175 +1,113 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kunal Kabra — Essays</title>
   <meta name="description" content="Essays on business, technology, manufacturing, and philosophy." />
-  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="../assets/style.css" />
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  <link rel="canonical" href="https://kunalkabra.com/essays/" />
   <script>
-    (function() {
-      const theme = localStorage.getItem('theme') ||
+    (function () {
+      var t = localStorage.getItem('theme') ||
         (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.setAttribute('data-theme', t);
     })();
   </script>
 </head>
 <body>
-  <div class="container">
-    <header class="header">
-      <a class="brand" href="../">
-        <img class="logo-light" src="../assets/Light Logo.svg" alt="Logo" />
-        <img class="logo-dark" src="../assets/Dark Logo.svg" alt="Logo" />
-        <div>
-          <div class="name">Kunal Kabra</div>
-          <div class="tagline">Essays</div>
-        </div>
+  <div class="wrap">
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Home">
+        <img class="logo-light" src="/assets/logo-light.svg" alt="" />
+        <img class="logo-dark" src="/assets/logo-dark.svg" alt="" />
+        <span class="brand-name">Kunal Kabra</span>
       </a>
-      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme">
-        <div class="toggle-track">
-          <svg class="track-icon track-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </svg>
-          <svg class="track-icon track-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
-        </div>
-        <div class="toggle-thumb">
-          <svg class="toggle-icon icon-sun" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
-            <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
-            <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
-            <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
-          </svg>
-          <svg class="toggle-icon icon-moon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
-        </div>
+      <div class="header-right">
+        <nav class="site-nav" aria-label="Primary">
+          <a href="/essays/">Essays</a>
+          <a href="/projects/">Problems</a>
+          <a href="/reading/">Reading</a>
+        </nav>
+        <button class="icon-btn search-btn" data-search-trigger aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <span class="search-label">Search</span><kbd>/</kbd>
       </button>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+        <span class="toggle-track">
+          <svg class="track-icon track-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg class="track-icon track-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </span>
+        <span class="toggle-thumb">
+          <svg class="toggle-icon icon-sun" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line></svg>
+          <svg class="toggle-icon icon-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </span>
+      </button>
+      </div>
     </header>
 
-    <div class="main">
-      <main class="content">
-        <h1 class="page-title">Essays</h1>
-        <p class="muted">Thoughts on business, technology, manufacturing, and ideas.</p>
-
-        <!-- Filter Buttons -->
-        <div class="essay-filters">
-          <button class="filter-btn active" data-filter="all">All</button>
-          <button class="filter-btn" data-filter="business">Business & Strategy</button>
-          <button class="filter-btn" data-filter="technology">Technology</button>
-          <button class="filter-btn" data-filter="manufacturing">India & Manufacturing</button>
-          <button class="filter-btn" data-filter="philosophy">Philosophy</button>
-        </div>
-
-        <!-- Essay List -->
-        <ul class="essay-list">
-          <li class="essay-item" data-tags="business technology">
-            <div class="essay-date">
-              2024-12-28
-              <span class="essay-tags">
-                <span class="essay-tag business">business</span>
-                <span class="essay-tag technology">technology</span>
-              </span>
-            </div>
-            <h3 class="essay-title"><a href="why-moats-matter">Why Moats Matter More Than Innovation</a></h3>
-            <p class="essay-desc">Innovation gets you in the game; moats keep you there. A framework for thinking about sustainable competitive advantage in tech.</p>
-          </li>
-
-          <li class="essay-item" data-tags="manufacturing">
-            <div class="essay-date">
-              2024-12-15
-              <span class="essay-tags">
-                <span class="essay-tag manufacturing">manufacturing</span>
-              </span>
-            </div>
-            <h3 class="essay-title"><a href="last-mile-manufacturing">The Last-Mile Problem in Indian Manufacturing</a></h3>
-            <p class="essay-desc">Why factories struggle with the final 20% of execution, and what it would take to close the gap.</p>
-          </li>
-
-          <li class="essay-item" data-tags="philosophy">
-            <div class="essay-date">
-              2024-12-01
-              <span class="essay-tags">
-                <span class="essay-tag philosophy">philosophy</span>
-              </span>
-            </div>
-            <h3 class="essay-title"><a href="agency-and-leverage">Agency and Leverage: Building Compounding Systems</a></h3>
-            <p class="essay-desc">On building systems that compound over time, and why agency is the foundation of everything else.</p>
-          </li>
-        </ul>
-
-        <!-- Newsletter CTA -->
-        <div class="newsletter-cta">
-          <h3>Stay updated</h3>
-          <p>Get the latest essays delivered to your inbox. No spam, unsubscribe anytime.</p>
-          <form class="subscribe-form" action="https://kunalkabra.substack.com/subscribe" method="get" target="_blank">
-            <input type="email" name="email" placeholder="your@email.com" required />
-            <button type="submit" class="subscribe-btn">Subscribe</button>
-          </form>
-          <div class="substack-link">Powered by <a href="https://kunalkabra.substack.com" target="_blank" rel="noopener">Substack</a></div>
-        </div>
-
-        <section class="footer">
-          <div><a href="../">&larr; Back home</a> &middot; <a href="mailto:kunal.kabra.iitb@gmail.com">kunal.kabra.iitb@gmail.com</a></div>
-        </section>
-      </main>
-
-      <aside class="sidebar">
-        <nav class="navbox" aria-label="Site navigation">
-          <div class="navtitle">Navigation</div>
-          <ul class="nav">
-            <li><a href="../">Home</a></li>
-            <li><a href="./" class="active">Essays / Articles</a></li>
-            <li><a href="../projects">Problems I'm exploring</a></li>
-            <li><a href="../reading">Reading & resources</a></li>
-            <li class="sub"><a href="learning-notes">Learning notes</a></li>
-          </ul>
-        </nav>
-      </aside>
+    <div class="page-head">
+      <h1 class="page-title">Essays</h1>
+      <p class="page-intro">Thoughts on business, technology, manufacturing, and ideas.</p>
     </div>
+
+    <main>
+      <div class="essay-filters" role="group" aria-label="Filter essays by topic">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="business">Business &amp; Strategy</button>
+        <button class="filter-btn" data-filter="technology">Technology</button>
+        <button class="filter-btn" data-filter="manufacturing">India &amp; Manufacturing</button>
+        <button class="filter-btn" data-filter="philosophy">Philosophy</button>
+      </div>
+
+      <ul class="essay-list">
+        <li class="essay-item" data-tags="business technology">
+          <div class="essay-date">2024-12-28
+            <span class="essay-tags"><span class="essay-tag business">business</span><span class="essay-tag technology">technology</span></span>
+          </div>
+          <h3 class="essay-title"><a href="/essays/why-moats-matter/">Why Moats Matter More Than Innovation</a></h3>
+          <p class="essay-desc">Innovation gets you in the game; moats keep you there. A framework for thinking about sustainable competitive advantage in tech.</p>
+        </li>
+        <li class="essay-item" data-tags="manufacturing">
+          <div class="essay-date">2024-12-15
+            <span class="essay-tags"><span class="essay-tag manufacturing">manufacturing</span></span>
+          </div>
+          <h3 class="essay-title"><a href="/essays/last-mile-manufacturing/">The Last-Mile Problem in Indian Manufacturing</a></h3>
+          <p class="essay-desc">Why factories struggle with the final 20% of execution, and what it would take to close the gap.</p>
+        </li>
+        <li class="essay-item" data-tags="philosophy">
+          <div class="essay-date">2024-12-01
+            <span class="essay-tags"><span class="essay-tag philosophy">philosophy</span></span>
+          </div>
+          <h3 class="essay-title"><a href="/essays/agency-and-leverage/">Agency and Leverage: Building Compounding Systems</a></h3>
+          <p class="essay-desc">On building systems that compound over time, and why agency is the foundation of everything else.</p>
+        </li>
+      </ul>
+
+      <section class="section" style="border-bottom:none;padding-bottom:0;">
+        <section class="newsletter compact">
+        <div class="newsletter-title">Stay updated</div>
+        <p>Get new essays delivered to your inbox. No spam, unsubscribe anytime.</p>
+        <form class="subscribe-form" action="https://kunalkabra.substack.com/subscribe" method="get" target="_blank">
+          <input type="email" name="email" placeholder="your@email.com" aria-label="Email address" required />
+          <button type="submit" class="subscribe-btn">Subscribe &rarr;</button>
+        </form>
+        <div class="substack-link">Powered by <a href="https://kunalkabra.substack.com" target="_blank" rel="noopener">Substack</a></div>
+      </section>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <a href="/">&larr; Back home</a> &middot; <a href="mailto:kunal.kabra.iitb@gmail.com">kunal.kabra.iitb@gmail.com</a>
+    </footer>
   </div>
 
-  <script src="../assets/script.js"></script>
-  <!-- View Counter -->
-  <div class="view-counter">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-      <circle cx="12" cy="12" r="3"></circle>
-    </svg>
-    <span id="view-count">---</span> views
+  <div class="view-counter" aria-label="Total site views">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+    <span id="view-count">---</span>&nbsp;views
   </div>
-  <!-- GoatCounter Analytics -->
+  <script src="/assets/script.js"></script>
   <script data-goatcounter="https://kunalkabra.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-  <script>
-    (function() {
-      var countEl = document.getElementById('view-count');
-      if (!countEl) return;
-      fetch('https://kunalkabra.goatcounter.com/counter/TOTAL.json')
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          if (data && data.count) countEl.textContent = parseInt(data.count).toLocaleString();
-        })
-        .catch(function() {});
-    })();
-  </script>
 </body>
 </html>
-
-
-
-
