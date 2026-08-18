@@ -1,0 +1,40 @@
+# Dependency and framework caches
+**/node_modules/
+intelligence-app/.next/
+intelligence-app/.vinext/
+intelligence-app/.vite/
+intelligence-app/coverage/
+intelligence-app/dist/
+intelligence-app/tsconfig.tsbuildinfo
+.npm-cache/
+
+# Local environment files and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Logs and operating-system files
+*.log
+.DS_Store
+Thumbs.db
+
+# Private Morning Intelligence inputs and working material
+research/
+**/research/
+newspapers/
+**/newspapers/
+*.pdf
+*.PDF
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.ppt
+*.pptx
+*.sqlite
+*.sqlite3
+*.db
