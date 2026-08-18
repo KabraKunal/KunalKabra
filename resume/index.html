@@ -3,136 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Resume — Kunal Kabra</title>
-  <meta name="description" content="Kunal Kabra's resume — IIT Bombay, Bain & Co." />
-  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/assets/style.css" />
-  <link rel="canonical" href="https://kunalkabra.com/resume/" />
+  <title>Kunal Kabra — Resume</title>
+  <meta http-equiv="refresh" content="0; url=/assets/resume.pdf" />
+  <link rel="canonical" href="https://kunalkabra.com/assets/resume.pdf" />
   <script>
-    (function () {
-      var t = localStorage.getItem('theme') ||
-        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      document.documentElement.setAttribute('data-theme', t);
-    })();
+    window.location.replace('/assets/resume.pdf');
   </script>
-  <style>
-    /* Scoped to this page only — remove if you'd rather move these into style.css */
-    .resume-wrap {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    .resume-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-    }
-    .resume-download {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.5rem 1rem;
-      border: 1px solid var(--border, currentColor);
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 0.9rem;
-      white-space: nowrap;
-    }
-    .resume-download:hover { opacity: 0.8; }
-    .resume-frame-shell {
-      width: 100%;
-      aspect-ratio: 8.5 / 11;
-      border: 1px solid var(--border, rgba(128,128,128,0.3));
-      border-radius: 12px;
-      overflow: hidden;
-      background: var(--card-bg, transparent);
-    }
-    .resume-frame-shell iframe,
-    .resume-frame-shell object {
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-    .resume-fallback {
-      display: none;
-      padding: 2rem;
-      text-align: center;
-    }
-    @media (max-width: 640px) {
-      .resume-frame-shell { aspect-ratio: 3 / 4; }
-    }
-  </style>
 </head>
 <body>
-  <div class="wrap">
-    <header class="site-header">
-      <a class="brand" href="/" aria-label="Home">
-        <img class="logo-light" src="/assets/logo-light.svg" alt="" />
-        <img class="logo-dark" src="/assets/logo-dark.svg" alt="" />
-        <span class="brand-name">Kunal Kabra</span>
-      </a>
-      <div class="header-right">
-        <nav class="site-nav" aria-label="Primary">
-          <a href="/essays/">Essays</a>
-          <a href="/projects/">Problems</a>
-          <a href="/reading/">Reading</a>
-          <a href="/resume/" aria-current="page">Resume</a>
-        </nav>
-        <button class="icon-btn search-btn" data-search-trigger aria-label="Search">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <span class="search-label">Search</span><kbd>/</kbd>
-        </button>
-        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
-          <span class="toggle-track">
-            <svg class="track-icon track-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-            <svg class="track-icon track-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-          </span>
-          <span class="toggle-thumb">
-            <svg class="toggle-icon icon-sun" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line></svg>
-            <svg class="toggle-icon icon-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-          </span>
-        </button>
-      </div>
-    </header>
-
-    <main>
-      <section class="section resume-wrap">
-        <div class="section-head"><h2>Resume</h2><div class="rule"></div></div>
-
-        <div class="resume-toolbar">
-          <p class="lede" style="margin:0;">IIT Bombay &rarr; Bain &amp; Co.</p>
-          <a class="resume-download" href="/assets/resume.pdf" download="Kunal_Kabra_Resume.pdf">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            Download PDF
-          </a>
-        </div>
-
-        <div class="resume-frame-shell">
-          <object data="/assets/resume.pdf#view=FitH" type="application/pdf">
-            <iframe src="/assets/resume.pdf#view=FitH" title="Kunal Kabra Resume"></iframe>
-          </object>
-        </div>
-
-        <noscript>
-          <p class="lede">If the resume doesn't display above, <a href="/assets/resume.pdf">open the PDF directly</a>.</p>
-        </noscript>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <div class="contact-links">
-        <a href="mailto:kunal.kabra.iitb@gmail.com">Email</a>
-        <a href="https://www.linkedin.com/in/kunal-kabra" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="https://wa.me/919322140825" target="_blank" rel="noopener">WhatsApp</a>
-        <a href="https://www.instagram.com/_kkunal._" target="_blank" rel="noopener">Instagram</a>
-      </div>
-      <div class="updated"><code>Last updated</code> 17 May 2026</div>
-    </footer>
-  </div>
-
-  <script src="/assets/script.js"></script>
-  <script data-goatcounter="https://kunalkabra.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  <p><a href="/assets/resume.pdf">Open Kunal Kabra's resume</a></p>
 </body>
 </html>
