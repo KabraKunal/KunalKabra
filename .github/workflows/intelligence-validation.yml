@@ -1,0 +1,88 @@
+name: Intelligence validation
+
+on:
+  pull_request:
+    paths:
+      - "intelligence-app/**"
+      - "intelligence/**"
+      - ".github/workflows/intelligence-validation.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "intelligence-app/**"
+      - "intelligence/**"
+      - ".github/workflows/intelligence-validation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: intelligence-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Test public intelligence app
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: intelligence-app
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: intelligence-app/package-lock.json
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build public app
+        run: npm run build
+
+      - name: Verify committed public bundle is current
+        working-directory: .
+        shell: bash
+        run: |
+          status="$(git status --porcelain --untracked-files=all -- intelligence)"
+          if [[ -n "$status" ]]; then
+            echo "The committed intelligence/ bundle does not match the build:" >&2
+            echo "$status" >&2
+            exit 1
+          fi
+
+      - name: Reject private source artifacts
+        working-directory: .
+        shell: bash
+        run: |
+          blocked="$(find intelligence -type f \( \
+            -iname '*.pdf' -o -iname '*.doc' -o -iname '*.docx' -o \
+            -iname '*.xls' -o -iname '*.xlsx' -o -iname '*.ppt' -o \
+            -iname '*.pptx' -o -iname '*.pem' -o -iname '*.key' -o \
+            -iname '*.p12' -o -iname '*.pfx' -o -iname '*.sqlite' -o \
+            -iname '*.db' -o -iname '*.log' -o -iname '*.map' \
+          \) -print -quit)"
+          if [[ -n "$blocked" ]]; then
+            echo "Forbidden artifact in public bundle: $blocked" >&2
+            exit 1
+          fi
+
+          blocked_dir="$(find intelligence -type d \( \
+            -iname 'research' -o -iname 'newspaper' -o -iname 'newspapers' -o \
+            -iname 'cache' -o -iname 'credentials' -o -iname 'secrets' \
+          \) -print -quit)"
+          if [[ -n "$blocked_dir" ]]; then
+            echo "Forbidden private directory in public bundle: $blocked_dir" >&2
+            exit 1
+          fi

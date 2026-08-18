@@ -150,6 +150,7 @@
           <kbd>&larr; &rarr;</kbd><span>Move through essay filters</span>
           <kbd>Enter</kbd><span>Open selected item</span>
           <kbd>g h</kbd><span>Go home</span>
+          <kbd>g i</kbd><span>Go to Morning Intelligence</span>
           <kbd>g e</kbd><span>Go to essays</span>
           <kbd>g p</kbd><span>Go to problems</span>
           <kbd>g r</kbd><span>Go to reading</span>
@@ -171,7 +172,7 @@
   }
   function siteUrl(p) { return '/' + String(p).replace(/^\//, ''); }
   function goTo(key) {
-    const routes = { h: '', e: 'essays/', p: 'projects/', r: 'reading/', l: 'essays/learning-notes/' };
+    const routes = { h: '', i: 'intelligence/#today', e: 'essays/', p: 'projects/', r: 'reading/', l: 'essays/learning-notes/' };
     if (routes[key] !== undefined) window.location.href = siteUrl(routes[key]);
   }
   const navLinks = () => Array.from(document.querySelectorAll('.site-nav a'));
@@ -199,7 +200,7 @@
 
     if (goPrefix) {
       const k = e.key.toLowerCase(); setGoPrefix(false);
-      if ('heprl'.includes(k)) { e.preventDefault(); goTo(k); }
+      if ('hieprl'.includes(k)) { e.preventDefault(); goTo(k); }
       return;
     }
     if (e.key.toLowerCase() === 'g' && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); setGoPrefix(true); return; }
@@ -254,6 +255,7 @@
 (function () {
   const commands = [
     { group: 'Pages', title: 'Home', subtitle: "Who I am and where to start", url: '/', icon: 'home' },
+    { group: 'Pages', title: 'Morning Intelligence', subtitle: 'Daily decision brief, watchlist and deep reads', url: '/intelligence/#today', icon: 'intelligence' },
     { group: 'Pages', title: 'Essays', subtitle: 'All essays and articles', url: '/essays/', icon: 'file-text' },
     { group: 'Pages', title: 'Problems', subtitle: "Problems I'm exploring", url: '/projects/', icon: 'box' },
     { group: 'Pages', title: 'Reading', subtitle: 'Books and resources', url: '/reading/', icon: 'book' },
@@ -267,6 +269,7 @@
 
   const svgPaths = {
     'home': '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline>',
+    'intelligence': '<path d="M4 19V9"></path><path d="M10 19V5"></path><path d="M16 19v-7"></path><path d="M22 19V2"></path><path d="M2 19h22"></path>',
     'file-text': '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line>',
     'box': '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>',
     'book': '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 0 3-3h7z"></path>',

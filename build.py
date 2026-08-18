@@ -2,7 +2,7 @@
 """Static site generator for kunalkabra.com — shared chrome + per-page content."""
 import os
 
-OUT = "/home/claude/site"
+OUT = os.path.dirname(os.path.abspath(__file__))
 EMAIL = "kunal.kabra.iitb@gmail.com"
 LINKEDIN = "https://www.linkedin.com/in/kunal-kabra"
 WHATSAPP = "https://wa.me/919322140825"
@@ -173,6 +173,7 @@ home_body = f'''    <main>
       <section class="section">
         <div class="section-head"><h2>Start here</h2><div class="rule"></div></div>
         <div class="nav-cards">
+          <a class="nav-card nav-card-featured" href="/intelligence/#today"><div><div class="nav-card-heading"><div class="nav-card-title">Morning Intelligence</div><span class="nav-card-label">Daily dashboard</span></div><div class="nav-card-sub">Seven things that matter, plus markets, India, companies, AI, geopolitics, since-print updates, the watchlist and deep reads</div></div><span class="nav-card-arrow">&rarr;</span></a>
           <a class="nav-card" href="/essays/"><div><div class="nav-card-title">Essays / Articles</div><div class="nav-card-sub">Business &amp; strategy &middot; Technology &middot; India &amp; manufacturing &middot; Philosophy</div></div><span class="nav-card-arrow">&rarr;</span></a>
           <a class="nav-card" href="/projects/"><div><div class="nav-card-title">Problems I&rsquo;m exploring</div><div class="nav-card-sub">Real questions with constraints and economics attached</div></div><span class="nav-card-arrow">&rarr;</span></a>
           <a class="nav-card" href="/reading/"><div><div class="nav-card-title">Reading &amp; resources</div><div class="nav-card-sub">Books, papers, links, and notes that shaped how I think</div></div><span class="nav-card-arrow">&rarr;</span></a>

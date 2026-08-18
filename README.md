@@ -5,7 +5,8 @@ and notes on building durable things.
 
 ## Stack
 
-Plain static HTML/CSS/JS. No build step, no framework, no dependencies.
+Plain static HTML/CSS/JS generated with Python's standard library. No framework or
+third-party build dependency.
 Deployed on GitHub Pages at the custom domain `kunalkabra.com` (see `CNAME`).
 
 ## Structure
@@ -13,6 +14,7 @@ Deployed on GitHub Pages at the custom domain `kunalkabra.com` (see `CNAME`).
 ```
 /
 ├── index.html                     Home
+├── intelligence/                  Published Morning Intelligence dashboard
 ├── 404.html                       Not-found page
 ├── about/                         Legacy redirect → /
 ├── essays/
@@ -34,8 +36,8 @@ Deployed on GitHub Pages at the custom domain `kunalkabra.com` (see `CNAME`).
 
 - Dark / light theme with system-preference detection, persisted in `localStorage`
   (no flash of unstyled content — theme is applied before first paint).
-- Command palette: press `/` anywhere to search pages, essays, and links.
-- Keyboard shortcuts: `?` help, `t` theme, `n` nav, `g h/e/p/r/l` go-to,
+- Command palette: press `/` anywhere to search pages, Morning Intelligence, essays, and links.
+- Keyboard shortcuts: `?` help, `t` theme, `n` nav, `g h/i/e/p/r/l` go-to,
   arrow keys through filters, essays, and results.
 - Essay filtering by topic (All / Business / Technology / Manufacturing / Philosophy).
 - Collapsible reading notes.
@@ -45,9 +47,11 @@ Deployed on GitHub Pages at the custom domain `kunalkabra.com` (see `CNAME`).
 
 ## Editing content
 
-All pages are generated from `build.py` in the repo root (kept for convenience).
-You can either edit the generated HTML files directly, or edit `build.py` and
-re-run `python3 build.py` to regenerate everything with consistent header/footer.
+The main-site pages are generated from `build.py` in the repo root. Edit that
+source of truth and invoke it as `python path/to/build.py`; it resolves the output
+directory relative to the script, not the current shell directory. The generator
+writes only its named main-site pages and does not overwrite the published
+`/intelligence/` app.
 
 ## Local preview
 
