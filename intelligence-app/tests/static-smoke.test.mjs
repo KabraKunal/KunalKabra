@@ -36,7 +36,9 @@ test("the public Intelligence bundle is complete and subpath-safe", async () => 
     assert.ok(javascript.includes(requiredLabel), `missing tab label: ${requiredLabel}`);
   }
 
-  assert.ok(javascript.includes("The Hormuz clock is now disputed"));
+  assert.ok(javascript.includes("7 Things That Matter Today"));
+  assert.ok(javascript.includes("PRINT FACT"));
+  assert.ok(javascript.includes("Published snapshot"));
   assert.ok(css.includes("--navy:"));
   assert.ok(css.includes(".brief-card-lead"));
   assert.ok(css.includes("prefers-reduced-motion:reduce"));
