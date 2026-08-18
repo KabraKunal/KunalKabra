@@ -255,7 +255,6 @@
 (function () {
   const commands = [
     { group: 'Pages', title: 'Home', subtitle: "Who I am and where to start", url: '/', icon: 'home' },
-    { group: 'Pages', title: 'Morning Intelligence', subtitle: 'Daily decision brief, watchlist and deep reads', url: '/intelligence/#today', icon: 'intelligence' },
     { group: 'Pages', title: 'Essays', subtitle: 'All essays and articles', url: '/essays/', icon: 'file-text' },
     { group: 'Pages', title: 'Problems', subtitle: "Problems I'm exploring", url: '/projects/', icon: 'box' },
     { group: 'Pages', title: 'Reading', subtitle: 'Books and resources', url: '/reading/', icon: 'book' },
@@ -263,6 +262,7 @@
     { group: 'Essays', title: 'The Last-Mile Problem in Indian Manufacturing', subtitle: "India's execution gap", url: '/essays/last-mile-manufacturing/', icon: 'essay' },
     { group: 'Essays', title: 'Agency and Leverage: Building Compounding Systems', subtitle: 'How individuals compound', url: '/essays/agency-and-leverage/', icon: 'essay' },
     { group: 'Essays', title: 'Learning Notes', subtitle: "Notes on what I'm studying", url: '/essays/learning-notes/', icon: 'essay' },
+    { group: 'Automation', title: 'Morning Intelligence', subtitle: 'Automated daily briefing', url: '/intelligence/#today', icon: 'intelligence' },
     { group: 'Contact', title: 'Send email', subtitle: 'kunal.kabra.iitb@gmail.com', url: 'mailto:kunal.kabra.iitb@gmail.com', icon: 'mail' },
     { group: 'Contact', title: 'LinkedIn', subtitle: 'linkedin.com/in/kunal-kabra', url: 'https://www.linkedin.com/in/kunal-kabra', icon: 'link', external: true },
   ];
