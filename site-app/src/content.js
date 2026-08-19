@@ -700,7 +700,7 @@ export const searchItems = [
   {
     type: "Page",
     title: "Home",
-    description: "Kunal Kabra's working notebook on strategy, systems, and durable growth.",
+    description: "A working notebook on technology, strategy, industrial systems, and turning ideas into execution.",
     href: "/",
   },
   {
@@ -749,13 +749,13 @@ export const searchItems = [
     type: "Book",
     title: book.title,
     description: `${book.author} — ${book.takeaway}`,
-    href: "/reading",
+    href: `/reading#${book.id}`,
   })),
-  ...notes.map((note) => ({
+  ...notes.map((note, index) => ({
     type: "Note",
     title: note.title,
     description: note.body,
-    href: "/notes",
+    href: `/notes#note-${index + 1}`,
   })),
   ...beliefs.map((belief, index) => ({
     type: "Belief",

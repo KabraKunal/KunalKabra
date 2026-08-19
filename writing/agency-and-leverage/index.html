@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#faf9f7" />
+    <meta name="theme-color" content="#f7f7f5" />
     <meta name="robots" content="index, follow" />
     <meta name="description" content="On building systems that compound over time, and why agency is the foundation of everything else." />
     <link rel="canonical" href="https://kunalkabra.com/writing/agency-and-leverage/" />
@@ -21,6 +21,7 @@
         var saved = localStorage.getItem("theme") || localStorage.getItem("kk-notebook-theme");
         var theme = saved || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
         document.documentElement.dataset.theme = theme;
+        document.querySelector('meta[name="theme-color"]').setAttribute("content", theme === "dark" ? "#111722" : "#f7f7f5");
       })();
     </script>
     <title>Agency and Leverage: Building Compounding Systems — Kunal Kabra</title>
