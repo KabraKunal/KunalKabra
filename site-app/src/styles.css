@@ -697,19 +697,88 @@ input:focus-visible {
 }
 
 .system-loop-figure {
-  margin: 0;
-}
-
-.system-loop-figure img {
   width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: clamp(10px, 1.7vw, 18px);
+  overflow: hidden;
   border: 1px solid var(--rule);
-  background: #f6f3ec;
-  mix-blend-mode: multiply;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--paper-soft) 34%, var(--paper));
+  contain: layout paint;
 }
 
-:root[data-theme="dark"] .system-loop-figure img {
-  mix-blend-mode: normal;
-  opacity: 0.9;
+.system-loop-diagram {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 21 / 17;
+  overflow: hidden;
+  shape-rendering: geometricPrecision;
+}
+
+.loop-connector {
+  fill: none;
+  stroke: var(--forest);
+  stroke-linecap: round;
+  stroke-width: 2px;
+}
+
+.loop-arrowhead {
+  fill: none;
+  stroke: var(--forest);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2px;
+}
+
+.loop-motion {
+  pointer-events: none;
+}
+
+.loop-moving-arrow {
+  opacity: 0;
+}
+
+.loop-moving-arrow path {
+  fill: none;
+  stroke: var(--rust);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.8px;
+}
+
+.loop-node ellipse {
+  fill: var(--paper);
+  stroke: var(--forest);
+  stroke-width: 1.7px;
+}
+
+.loop-node text {
+  fill: var(--ink);
+  font-family: "Newsreader Variable", Georgia, serif;
+  font-size: 18px;
+  font-weight: 560;
+  letter-spacing: -0.01em;
+}
+
+.loop-node-manufacturing text,
+.loop-node-demand text {
+  font-size: 16px;
+}
+
+.loop-center-label circle {
+  fill: color-mix(in srgb, var(--paper-soft) 58%, transparent);
+  stroke: var(--rule-strong);
+  stroke-dasharray: 3 5;
+  stroke-width: 1px;
+}
+
+.loop-center-label text {
+  fill: var(--ink-body);
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.035em;
 }
 
 .note-fragments {
@@ -2047,7 +2116,7 @@ input:focus-visible {
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1120px) {
   .questions-layout {
     grid-template-columns: 1fr;
   }
@@ -2056,7 +2125,9 @@ input:focus-visible {
     width: min(480px, 100%);
     margin-inline: auto;
   }
+}
 
+@media (max-width: 1024px) {
   .utilities-footer {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -2685,6 +2756,10 @@ input:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .loop-motion {
+    display: none;
+  }
+
   *,
   *::before,
   *::after {

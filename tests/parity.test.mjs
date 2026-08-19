@@ -120,6 +120,24 @@ test("keeps the notebook concise and orders Home chapters by the rendered page",
   assert.ok(searchItems.some((item) => item.type === "Belief" && item.href === "/#beliefs"));
 });
 
+test("renders the reinforcing loop as responsive, accessible frontend geometry", async () => {
+  const [app, styles] = await Promise.all([
+    readText("site-app/src/App.jsx"),
+    readText("site-app/src/styles.css"),
+  ]);
+
+  assert.match(app, /function SystemLoopDiagram/);
+  assert.match(app, /viewBox="0 0 420 340"/);
+  assert.match(app, /aria-labelledby="system-loop-title system-loop-description"/);
+  assert.match(app, /Resources strengthen demand and capability/);
+  assert.equal((app.match(/<animateMotion/g) ?? []).length, 3);
+  assert.equal((app.match(/markerEnd="url\(#system-loop-arrowhead\)"/g) ?? []).length, 3);
+  assert.doesNotMatch(app, /system-loop\.png/);
+  assert.match(styles, /\.system-loop-diagram \{[\s\S]*?width: 100%;[\s\S]*?height: auto;[\s\S]*?aspect-ratio: 21 \/ 17;/);
+  assert.match(styles, /@media \(max-width: 1120px\) \{[\s\S]*?\.questions-layout \{[\s\S]*?grid-template-columns: 1fr;/);
+  assert.match(styles, /@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\.loop-motion \{[\s\S]*?display: none;/);
+});
+
 test("keeps legacy URLs as static redirects for branch-backed hosting", async () => {
   const redirects = new Map([
     ["public/essays/index.html", "/writing"],
