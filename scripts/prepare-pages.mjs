@@ -36,7 +36,7 @@ const routeMetadata = [
   {
     path: "/about/",
     title: "About — Kunal Kabra",
-    description: "Kunal Kabra's background, path, working beliefs, and contact details.",
+    description: "Kunal Kabra's background, working beliefs, and contact details.",
   },
   ...essays.map((essay) => ({
     path: `/writing/${essay.slug}/`,

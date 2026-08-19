@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  ArrowBendLeftUp,
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
@@ -50,7 +49,7 @@ const ROUTE_METADATA = {
   "/problems": ["Problems — Kunal Kabra", "Open questions, constraints, and working hypotheses on rural productivity and energy independence."],
   "/notes": ["Learning notes — Kunal Kabra", "Working notes from what Kunal Kabra is studying and trying to understand."],
   "/reading": ["Reading — Kunal Kabra", "Books and resources that shaped how Kunal Kabra thinks."],
-  "/about": ["About — Kunal Kabra", "Kunal Kabra's background, path, working beliefs, and contact details."],
+  "/about": ["About — Kunal Kabra", "Kunal Kabra's background, working beliefs, and contact details."],
 };
 
 function getRouteMetadata(path) {
@@ -301,21 +300,34 @@ function NotebookShell({ children, path, navigate, theme, toggleTheme, onSearch,
 }
 
 function useHomeScrollSpy() {
-  const [active, setActive] = useState("essays");
+  const [active, setActive] = useState("beliefs");
 
   useEffect(() => {
     const sections = HOME_CHAPTERS.map((chapter) => document.getElementById(chapter.id)).filter(Boolean);
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible) setActive(visible.target.id);
-      },
-      { rootMargin: "-15% 0px -60% 0px", threshold: [0.05, 0.25, 0.5] },
-    );
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
+    let frame = null;
+
+    const updateActive = () => {
+      frame = null;
+      const activationLine = Math.min(window.innerHeight * 0.28, 240);
+      let current = sections[0];
+      sections.forEach((section) => {
+        if (section.getBoundingClientRect().top <= activationLine) current = section;
+      });
+      if (current) setActive(current.id);
+    };
+
+    const scheduleUpdate = () => {
+      if (frame === null) frame = window.requestAnimationFrame(updateActive);
+    };
+
+    updateActive();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+    return () => {
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      if (frame !== null) window.cancelAnimationFrame(frame);
+    };
   }, []);
 
   return active;
@@ -360,11 +372,25 @@ function Hero() {
           fetchPriority="high"
           decoding="async"
         />
-        <figcaption>
-          <ArrowBendLeftUp size={34} weight="light" aria-hidden="true" />
-          <span>Thinker,<br />builder,<br />perpetual student.</span>
-        </figcaption>
       </figure>
+    </section>
+  );
+}
+
+function BeliefsSection() {
+  return (
+    <section id="beliefs" className="closing-section home-beliefs" aria-labelledby="beliefs-heading">
+      <div className="belief-block">
+        <h2 id="beliefs-heading" className="section-label">Working beliefs</h2>
+        <blockquote>{beliefs[0]}</blockquote>
+      </div>
+      <div className="belief-note">
+        <p>{beliefs[1]}</p>
+        <p>{beliefs[2]}</p>
+      </div>
+      <div className="belief-note">
+        <p>{beliefs[3]}</p>
+      </div>
     </section>
   );
 }
@@ -391,16 +417,6 @@ function EssaysSection({ navigate }) {
               </span>
               <ArrowRight size={18} weight="regular" className="row-arrow" aria-hidden="true" />
             </AppLink>
-            {essay.slug === "agency-and-leverage" && (
-              <aside className="margin-note" aria-label="Connection note">
-                <span>Margin note</span>
-                Connects to the open question on rural productivity — where does design leverage sit when the core
-                problem is physical work?
-                <button type="button" onClick={() => document.getElementById("rural-productivity")?.scrollIntoView()}>
-                  → See Question 01
-                </button>
-              </aside>
-            )}
           </div>
         ))}
       </div>
@@ -577,11 +593,7 @@ function SocialIcon({ type }) {
 function ClosingSection({ navigate, onSearch, onHelp, theme, toggleTheme }) {
   return (
     <>
-      <section id="beliefs" className="closing-section" aria-labelledby="beliefs-heading">
-        <div className="belief-block">
-          <h2 id="beliefs-heading" className="section-label">Working beliefs</h2>
-          <blockquote>{beliefs[0]}</blockquote>
-        </div>
+      <section className="closing-section home-closing" aria-label="Stay connected">
         <div className="monthly-block">
           <h2 className="section-label">Monthly notes</h2>
           <p>One email a month on what I’m learning and building. No spam, unsubscribe anytime.</p>
@@ -621,7 +633,7 @@ function SiteCopyright() {
   return (
     <span className="copyright">
       © Kunal Kabra
-      <small>{views ? <><Eye size={13} aria-hidden="true" /> {views} views</> : "Built as a working notebook."}</small>
+      {views && <small><Eye size={13} aria-hidden="true" /> {views} views</small>}
     </span>
   );
 }
@@ -666,9 +678,12 @@ function HomePage({ navigate, onSearch, onHelp, theme, toggleTheme }) {
       <main id="main-content" tabIndex="-1">
         <div className="home-primary">
           <Hero />
+        </div>
+        <BeliefsSection />
+        <QuestionsSection navigate={navigate} />
+        <div className="home-primary">
           <EssaysSection navigate={navigate} />
         </div>
-        <QuestionsSection navigate={navigate} />
         <NotesSection navigate={navigate} />
         <ReadingSection navigate={navigate} />
         <ClosingSection navigate={navigate} onSearch={onSearch} onHelp={onHelp} theme={theme} toggleTheme={toggleTheme} />
@@ -777,12 +792,9 @@ function WritingPage({ path, navigate, onSearch, onHelp, theme, toggleTheme }) {
           </div>
         </section>
         <section className="writing-note">
-          <span className="section-label">Shorter notes</span>
-          <h2>Ideas can stay unfinished while they become useful.</h2>
-          <p>
-            Learning notes have their own archive, where working fragments stay visible while they gather enough
-            evidence to become essays.
-          </p>
+          <span className="section-label">Learning notes</span>
+          <h2>Read shorter working notes.</h2>
+          <p>Early observations from books, projects, and open questions live in the Notes archive.</p>
         </section>
         <NewsletterCallout idPrefix="writing" />
         <PageFooter navigate={navigate} onSearch={onSearch} onHelp={onHelp} theme={theme} toggleTheme={toggleTheme} />
@@ -814,7 +826,6 @@ function EssayArticlePage({ essay, path, navigate, onSearch, onHelp, theme, togg
             {essay.sections.filter((section) => section.title !== "Opening").map((section, index) => (
               <a key={section.title} href={`#section-${index + 1}`}>{String(index + 1).padStart(2, "0")} {section.title}</a>
             ))}
-            {essay.sources?.length > 0 && <a href="#source-notes">Sources</a>}
           </aside>
           <article className="article-body">
             {essay.sections.map((section, index) => (
@@ -828,34 +839,6 @@ function EssayArticlePage({ essay, path, navigate, onSearch, onHelp, theme, togg
                 {section.quote && <blockquote>{section.quote}</blockquote>}
               </section>
             ))}
-            {essay.sources?.length > 0 && (
-              <section id="source-notes" className="article-sources" aria-labelledby="source-notes-heading">
-                <span className="section-label">Research ledger</span>
-                <h2 id="source-notes-heading">Source notes</h2>
-                <p className="article-sources-intro">
-                  Sources anchor the factual claims; interpretation and conclusions are my own. Company and
-                  practitioner figures are identified in the essay rather than treated as universal benchmarks.
-                </p>
-                <ol>
-                  {essay.sources.map((source) => (
-                    <li key={source.url}>
-                      <a
-                        href={source.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label={`${source.title} — ${source.publisher} (opens in a new tab)`}
-                      >
-                        <span>{source.title}</span>
-                        <ArrowUpRight size={15} aria-hidden="true" />
-                      </a>
-                      <small>{source.publisher}</small>
-                      <p>{source.note}</p>
-                    </li>
-                  ))}
-                </ol>
-              </section>
-            )}
-            <div className="article-end-mark">End note · Keep the argument, challenge the assumptions.</div>
           </article>
         </div>
         <section className="article-next">
@@ -912,16 +895,6 @@ function ProblemsPage({ path, navigate, onSearch, onHelp, theme, toggleTheme }) 
             );
           })}
         </section>
-        <section className="problem-method">
-          <span className="section-label">How these pages evolve</span>
-          <div>
-            <h2>State the belief. Name the test. Keep the revision visible.</h2>
-            <p>
-              A problem page is useful when it makes uncertainty legible. Each question keeps a working hypothesis
-              beside the evidence that could change it.
-            </p>
-          </div>
-        </section>
         <PageFooter navigate={navigate} onSearch={onSearch} onHelp={onHelp} theme={theme} toggleTheme={toggleTheme} />
       </main>
     </NotebookShell>
@@ -975,13 +948,6 @@ function ReadingPage({ path, navigate, onSearch, onHelp, theme, toggleTheme }) {
             })}
           </section>
         ))}
-        <section className="future-shelf">
-          <span className="section-label">Later on this page</span>
-          <p>
-            This shelf is where I will add the blogs, newsletters, writers, and people I keep returning to when I
-            want signal over noise.
-          </p>
-        </section>
         <PageFooter navigate={navigate} onSearch={onSearch} onHelp={onHelp} theme={theme} toggleTheme={toggleTheme} />
       </main>
     </NotebookShell>
@@ -1009,13 +975,6 @@ function NotesPage({ path, navigate, onSearch, onHelp, theme, toggleTheme }) {
             </article>
           ))}
         </section>
-        <section className="notes-method">
-          <span className="section-label">How this archive grows</span>
-          <p>
-            A note stays here while the claim is still being tested. When it can carry evidence, objections, and a
-            useful conclusion, it moves into Writing.
-          </p>
-        </section>
         <PageFooter navigate={navigate} onSearch={onSearch} onHelp={onHelp} theme={theme} toggleTheme={toggleTheme} />
       </main>
     </NotebookShell>
@@ -1026,44 +985,35 @@ function AboutPage({ path, navigate, onSearch, onHelp, theme, toggleTheme }) {
   return (
     <NotebookShell path={path} navigate={navigate} theme={theme} toggleTheme={toggleTheme} onSearch={onSearch} activeId="beliefs">
       <main id="main-content" className="subpage-main" tabIndex="-1">
-        <PageIntro eyebrow="About / 01" title="The model and the machine." />
+        <PageIntro eyebrow="About" title="Kunal Kabra." />
         <section className="about-opening">
-          <img src="/assets/portrait.jpg" alt="Kunal Kabra" loading="lazy" decoding="async" />
+          <img
+            src="/assets/portrait.jpg"
+            srcSet="/assets/portrait-640.jpg 640w, /assets/portrait-1200.jpg 1200w, /assets/portrait.jpg 2267w"
+            alt="Kunal Kabra"
+            width="2267"
+            height="2267"
+            sizes="(max-width: 760px) 76vw, 360px"
+            loading="lazy"
+            decoding="async"
+          />
           <div>
             <p className="about-lede">
-              I care about how things actually get built — not just the deck, but the system underneath it.
+              I work where strategy meets execution, especially in complex, capital-intensive businesses.
             </p>
-            <p>
-              I studied mechanical engineering at IIT Bombay, did research in energy systems, and now advise companies
-              at Bain on growth and operations — mostly in complex, capital-intensive environments where the real
-              problem is execution, not ideas.
-            </p>
-            <p>
-              This site is where I think out loud about strategy, technology, India’s industrial future, and the craft
-              of building durable things.
-            </p>
+            <p>I studied mechanical engineering at IIT Bombay, researched energy systems, and now advise companies at Bain on growth and operations.</p>
+            <p>I write here about technology, India’s industrial future, and building durable systems.</p>
           </div>
         </section>
-        <section className="path-timeline">
-          <SectionLabel>Path</SectionLabel>
-          {[
-            ["01", "Mechanical engineering", "A first language for understanding physical systems and constraints."],
-            ["02", "Energy-systems research", "A closer look at infrastructure, dependency, and long time horizons."],
-            ["03", "Strategy & operations", "Working where the model meets the machinery of execution."],
-            ["04", "Thinking in public", "Essays, problems, and reading notes that make the working model visible."],
-          ].map(([number, title, copy]) => (
-            <article key={number}><span>{number}</span><strong>{title}</strong><p>{copy}</p></article>
-          ))}
-        </section>
-        <section id="beliefs" className="about-beliefs">
-          <SectionLabel>What I believe</SectionLabel>
+        <section id="beliefs" className="about-beliefs" aria-labelledby="about-beliefs-heading">
+          <SectionLabel id="about-beliefs-heading">What I believe</SectionLabel>
           <blockquote>{beliefs[0]}</blockquote>
           <div>{beliefs.slice(1).map((belief) => <p key={belief}>{belief}</p>)}</div>
         </section>
-        <section className="about-contact">
-          <div>
-            <span className="section-label">Get in touch</span>
-            <h2>If something here is worth discussing, I’d like to hear from you.</h2>
+        <section className="about-contact about-contact-compact" aria-labelledby="about-contact-heading">
+          <div className="about-contact-copy">
+            <span id="about-contact-heading" className="section-label">Get in touch</span>
+            <p>If you’re building in industrials, manufacturing, or deep tech—or found something here worth discussing—I’d like to hear from you.</p>
           </div>
           <div className="social-list">
             {socialLinks.map((link) => (

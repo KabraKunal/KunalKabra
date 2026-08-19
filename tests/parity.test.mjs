@@ -68,16 +68,37 @@ test("publishes two researched strategic essays without crowding the homepage", 
   assert.equal(essays.length, 5);
   assert.equal(additions.length, 2);
   assert.equal(essays.filter((essay) => essay.featured).length, 3);
+  const expectedReadTimes = new Map([
+    ["costs-that-build-the-company", "8 min read"],
+    ["ai-stack-moving-bottleneck", "11 min read"],
+  ]);
   for (const essay of additions) {
     assert.equal(essay.date, "19 Aug 2026");
     assert.ok(essay.sections.length >= 8);
     assert.ok(essay.sources.length >= 7);
+    assert.equal(essay.readTime, expectedReadTimes.get(essay.slug));
     assert.ok(searchItems.some((item) => item.href === `/writing/${essay.slug}`));
     assert.match(sitemap, new RegExp(`https:\/\/kunalkabra\\.com\/writing\/${essay.slug}`));
   }
-  assert.match(app, /id="source-notes"/);
+  assert.doesNotMatch(app, /id="source-notes"|article-sources/);
   assert.match(app, /id: "operations", label: "Operations"/);
   assert.match(app, /id: "technology", label: "Technology"/);
+});
+
+test("keeps the notebook concise and orders Home chapters by the rendered page", async () => {
+  const app = await readText("site-app/src/App.jsx");
+  const homeStart = app.indexOf("function HomePage");
+  const homeEnd = app.indexOf("function PageIntro", homeStart);
+  const home = app.slice(homeStart, homeEnd);
+
+  assert.match(app, /useState\("beliefs"\)/);
+  assert.ok(home.indexOf("<BeliefsSection") < home.indexOf("<QuestionsSection"));
+  assert.ok(home.indexOf("<QuestionsSection") < home.indexOf("<EssaysSection"));
+  assert.ok(home.indexOf("<EssaysSection") < home.indexOf("<NotesSection"));
+  assert.ok(home.indexOf("<NotesSection") < home.indexOf("<ReadingSection"));
+  assert.doesNotMatch(app, /path-timeline|Research ledger|Keep the argument, challenge the assumptions|How these pages evolve|How this archive grows|Later on this page|Margin note/);
+  assert.match(app, /about-contact-compact/);
+  assert.ok(searchItems.some((item) => item.type === "Belief" && item.href === "/#beliefs"));
 });
 
 test("keeps legacy URLs as static redirects for branch-backed hosting", async () => {
@@ -138,6 +159,10 @@ test("generates status-200 route shells with route-specific metadata", async () 
     assert.match(html, /<noscript><article>/);
     assert.match(html, /\/assets\/site\.js/);
   }
+
+  const about = await readText("dist/client/about/index.html");
+  assert.match(about, /Kunal Kabra's background, working beliefs, and contact details\./);
+  assert.doesNotMatch(about, /background, path/i);
 });
 
 test("enforces same-day India publication for Morning Intelligence", async () => {
