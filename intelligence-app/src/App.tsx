@@ -39,7 +39,7 @@ const tabIds: Record<Tab, string> = {
   "DEEP READS": "deep-reads",
 };
 
-function SourceTag({ item }: { item: SourceRef }) {
+function SourceTag({ item, linked = true }: { item: SourceRef; linked?: boolean }) {
   const content = (
     <>
       <span className="source-name">{item.source}</span>
@@ -47,7 +47,7 @@ function SourceTag({ item }: { item: SourceRef }) {
     </>
   );
 
-  if (item.url) {
+  if (linked && item.url) {
     return (
       <a
         className={`source-tag source-${item.source.toLocaleLowerCase()}`}
@@ -76,24 +76,24 @@ function StoryCard({ story, lead = false }: { story: Story; lead?: boolean }) {
   return (
     <details className={`brief-card${lead ? " brief-card-lead" : ""}`}>
       <summary>
-        <div className="brief-number" aria-hidden="true">
+        <span className="brief-number" aria-hidden="true">
           {story.rank ? String(story.rank).padStart(2, "0") : "•"}
-        </div>
-        <div className="brief-main">
-          <div className="brief-topline">
+        </span>
+        <span className="brief-main">
+          <span className="brief-topline">
             <span className="eyebrow">{story.eyebrow}</span>
             <span className={`importance importance-${story.importance.toLocaleLowerCase()}`}>
               {story.importance}
             </span>
-          </div>
-          <h3>{story.headline}</h3>
-          <p className="brief-summary">{story.summary}</p>
-          <div className="source-row">
+          </span>
+          <span className="brief-heading" role="heading" aria-level={3}>{story.headline}</span>
+          <span className="brief-summary">{story.summary}</span>
+          <span className="source-row" aria-label="Sources">
             {story.sources.map((item, index) => (
-              <SourceTag item={item} key={`${item.source}-${item.detail}-${index}`} />
+              <SourceTag item={item} linked={false} key={`${item.source}-${item.detail}-${index}`} />
             ))}
-          </div>
-        </div>
+          </span>
+        </span>
         <span className="expand-control" aria-hidden="true">
           <span className="expand-label">Context</span>
           <span className="expand-icon">＋</span>
@@ -136,6 +136,11 @@ function StoryCard({ story, lead = false }: { story: Story; lead?: boolean }) {
             <span>
               {story.confidence} confidence · {story.maturity}
             </span>
+          </div>
+          <div className="source-row source-row-expanded" aria-label="Linked sources">
+            {story.sources.map((item, index) => (
+              <SourceTag item={item} key={`${story.id}-linked-source-${index}`} />
+            ))}
           </div>
           {story.evidence.map((item, index) => (
             <div className="evidence-line" key={`${story.id}-evidence-${index}`}>
@@ -209,7 +214,7 @@ function PulseTable() {
   );
 }
 
-function SectionView({ tab, items }: { tab: keyof typeof sectionGuides; items: Story[] }) {
+function SectionView({ tab, items, showPulse }: { tab: keyof typeof sectionGuides; items: Story[]; showPulse: boolean }) {
   const guide = sectionGuides[tab];
   return (
     <section className="view section-view" aria-labelledby={`${tabIds[tab]}-title`}>
@@ -224,7 +229,7 @@ function SectionView({ tab, items }: { tab: keyof typeof sectionGuides; items: S
         <span className="detail-label">Read this first</span>
         <p>{guide.callout}</p>
       </div>
-      {tab === "MARKETS & MACRO" && <PulseTable />}
+      {tab === "MARKETS & MACRO" && showPulse && <PulseTable />}
       <div className="section-body">
         <aside className="context-rail">
           <span className="eyebrow">Editorial lens</span>
@@ -416,6 +421,7 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const [source, setSource] = useState<SourceFilter>("All");
   const tabButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
 
   useLayoutEffect(() => {
     const applyHash = () => {
@@ -556,13 +562,21 @@ export default function Home() {
             <span aria-hidden="true">⌕</span>
             <input
               id="intelligence-search"
+              ref={searchInputRef}
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search themes, companies, implications…"
             />
             {query && (
-              <button type="button" onClick={() => setQuery("")} aria-label="Clear search">
+              <button
+                type="button"
+                onClick={() => {
+                  setQuery("");
+                  requestAnimationFrame(() => searchInputRef.current?.focus());
+                }}
+                aria-label="Clear search"
+              >
                 ×
               </button>
             )}
@@ -594,7 +608,11 @@ export default function Home() {
           </p>
           {activeTab === "TODAY" && <TodayView items={filteredStories} />}
           {activeTab in sectionGuides && (
-            <SectionView tab={activeTab as keyof typeof sectionGuides} items={filteredStories} />
+            <SectionView
+              tab={activeTab as keyof typeof sectionGuides}
+              items={filteredStories}
+              showPulse={query.trim() === "" && source === "All"}
+            />
           )}
           {activeTab === "SINCE PRINT" && <SincePrintView query={query} source={source} />}
           {activeTab === "WATCHLIST" && <WatchlistView query={query} source={source} />}
