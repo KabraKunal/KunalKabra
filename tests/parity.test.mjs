@@ -86,7 +86,10 @@ test("publishes two researched strategic essays without crowding the homepage", 
 });
 
 test("keeps the notebook concise and orders Home chapters by the rendered page", async () => {
-  const app = await readText("site-app/src/App.jsx");
+  const [app, styles] = await Promise.all([
+    readText("site-app/src/App.jsx"),
+    readText("site-app/src/styles.css"),
+  ]);
   const homeStart = app.indexOf("function HomePage");
   const homeEnd = app.indexOf("function PageIntro", homeStart);
   const home = app.slice(homeStart, homeEnd);
@@ -96,7 +99,13 @@ test("keeps the notebook concise and orders Home chapters by the rendered page",
   assert.ok(home.indexOf("<QuestionsSection") < home.indexOf("<EssaysSection"));
   assert.ok(home.indexOf("<EssaysSection") < home.indexOf("<NotesSection"));
   assert.ok(home.indexOf("<NotesSection") < home.indexOf("<ReadingSection"));
-  assert.doesNotMatch(app, /path-timeline|Research ledger|Keep the argument, challenge the assumptions|How these pages evolve|How this archive grows|Later on this page|Margin note/);
+  assert.doesNotMatch(app, /path-timeline|path-line|reading-page-art|book-spine-(green|rust)|Research ledger|Keep the argument, challenge the assumptions|How these pages evolve|How this archive grows|Later on this page|Margin note/);
+  assert.match(app, /A working notebook on <span className="accent-underline">how technology holds together\.<\/span>/);
+  assert.match(app, /I am interested in how complex systems work—and what it takes to build them well\./);
+  assert.doesNotMatch(app, /I work where strategy meets execution/);
+  assert.match(app, /className="belief-list"[\s\S]*?beliefs\.slice\(1\)/);
+  assert.match(app, /function SocialLinks/);
+  assert.match(styles, /\.social-list \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(app, /about-contact-compact/);
   assert.ok(searchItems.some((item) => item.type === "Belief" && item.href === "/#beliefs"));
 });
