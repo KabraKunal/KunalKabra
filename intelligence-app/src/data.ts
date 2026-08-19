@@ -146,7 +146,6 @@ export const stories: Story[] = [
     maturity: "A realised unwind is source-reported; private marks, leverage and counterparty allocation are not public audited data",
     sources: [
       { source: "WSJ", detail: "18 Aug PDF pp1, 4 · original staff investigation of the six-day unwind" },
-      { source: "FT", detail: "18 Aug duplicate PDF p1 · prior BDC-credit context; not a fresh vote" },
     ],
     evidence: [
       { kind: "PRINT FACT", text: "Use ‘reportedly’ and ‘about’: $30bn is fund-equity loss, while near-$100bn is gross exposure. Neither is an audited public filing." },
@@ -934,7 +933,7 @@ export const watchlist = [
     thesis: "Deposit growth and mix remain binding, now extending into FCNR pricing, offshore issuance and surplus-liquidity management.",
     evidence: "Banks offered up to 6.4% on FCNR(B), ICICI raised $750m, bond positions unwound after early closure and RBI conducted another liquidity-absorption operation.",
     trigger: "Deposit growth/mix, NIMs, final FCNR retention, offshore pricing, swaps and RBI liquidity operations.",
-    sources: ["BS", "Mint"],
+    sources: ["BS", "Mint", "Web"],
   },
   {
     theme: "Tata succession / governance",
@@ -942,7 +941,7 @@ export const watchlist = [
     thesis: "Capital allocation across listed companies now intersects directly with unresolved Trust, board, AGM and CEO mechanics.",
     evidence: "The AGM was actually adjourned for lack of quorum, Chandrasekaran declined another term and the group’s entity-level funding needs remain large but differentiated.",
     trigger: "Reconvened AGM, Charity Commissioner order, Trust nominee, Tata Sons board action, named successor and funding-route decisions.",
-    sources: ["BS", "Mint", "Web"],
+    sources: ["BS", "Mint"],
     risk: true,
   },
 ] satisfies WatchItem[];
