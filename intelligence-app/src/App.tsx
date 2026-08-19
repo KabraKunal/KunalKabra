@@ -24,7 +24,7 @@ import {
   watchSearchDocument,
 } from "./search.mjs";
 
-const sourceOptions = ["All", "FT", "BS", "Mint", "Web"] as const;
+const sourceOptions = ["All", "FT", "WSJ", "BS", "Mint", "Web"] as const;
 type SourceFilter = (typeof sourceOptions)[number];
 
 const tabIds: Record<Tab, string> = {
