@@ -1,11 +1,10 @@
 name: Intelligence validation
 
 on:
+  # Daily-branch scope enforcement must run even when the only changed path is
+  # outside Intelligence; a workflow-level PR path filter would let that case
+  # bypass the allowlist guard entirely.
   pull_request:
-    paths:
-      - "intelligence-app/**"
-      - "intelligence/**"
-      - ".github/workflows/intelligence-validation.yml"
   push:
     branches:
       - main
@@ -34,6 +33,35 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Enforce Intelligence-only daily PR scope
+        if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'codex/morning-intelligence-')
+        working-directory: .
+        shell: bash
+        run: |
+          if [[ "${{ github.base_ref }}" != "main" ]]; then
+            echo "Daily Intelligence PRs must target main; found ${{ github.base_ref }}." >&2
+            exit 1
+          fi
+
+          base_sha="${{ github.event.pull_request.base.sha }}"
+          head_sha="${{ github.event.pull_request.head.sha }}"
+          changed_paths="$(git diff --no-renames --name-only --diff-filter=ACDMRTUXB "$base_sha...$head_sha")"
+          if [[ -z "$changed_paths" ]]; then
+            echo "Daily Intelligence PR has no changed files." >&2
+            exit 1
+          fi
+
+          unexpected="$(printf '%s\n' "$changed_paths" | grep -Ev '^(intelligence-app/src/data\.ts|intelligence-app/public/og\.png|intelligence/.*)$' || true)"
+          if [[ -n "$unexpected" ]]; then
+            echo "Daily Intelligence PR changes protected main-site paths:" >&2
+            echo "$unexpected" >&2
+            exit 1
+          fi
+
+          echo "Daily PR scope is confined to the Intelligence allowlist."
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -41,6 +69,10 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: intelligence-app/package-lock.json
+
+      - name: Exercise PR-only publisher safeguards
+        working-directory: .
+        run: node --test tests/intelligence-publisher-behavior.test.mjs
 
       - name: Install locked dependencies
         run: npm ci --no-audit --no-fund

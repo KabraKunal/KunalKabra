@@ -15,13 +15,15 @@ working material must never enter the website repository.
 
 ## Publish an edition
 
-Start from a clean, synchronized `main` checkout of
+Start from a clean `codex/morning-intelligence-YYYY-MM-DD-*` branch created from
+the exact latest `origin/main` commit of
 `https://github.com/KabraKunal/KunalKabra`. Complete and review the Daily Brief
-flow first, then run the publisher from the website repository:
+flow first, then run the publisher from that branch:
 
 ```powershell
 pwsh -File .\scripts\publish-intelligence.ps1 `
-  -SourcePath "C:\path\to\Daily Brief"
+  -SourcePath "C:\path\to\Daily Brief" `
+  -ExpectedBaseCommit "<40-character origin/main SHA>"
 ```
 
 That command validates the source, installs locked dependencies, runs the app
@@ -29,23 +31,31 @@ tests and build, inspects the generated public bundle, and creates a local commi
 with the deterministic message `Publish Morning Intelligence: YYYY-MM-DD`. It
 does not push.
 
-After confirming the first local run, publish and push in one guarded operation:
+For the production preparation run, start a fresh dated branch from the current
+`origin/main` and publish and push in one guarded operation:
 
 ```powershell
 pwsh -File .\scripts\publish-intelligence.ps1 `
   -SourcePath "C:\path\to\Daily Brief" `
+  -ExpectedBaseCommit "<40-character origin/main SHA>" `
   -Push
 ```
 
-`-Push` targets `origin/main` explicitly. Without that switch the script never
-contacts GitHub to push.
+`-Push` pushes only the checked-out dated PR branch. The publisher never updates
+`origin/main`. Without that switch it never contacts GitHub to push.
+
+A no-push run creates a local diagnostic commit for inspection. Do not invoke
+the publisher a second time on that now-ahead branch; the guarded production run
+must use a new dated branch from the then-current `origin/main` so its base and
+race checks remain meaningful.
 
 ## What the publisher verifies
 
 Before changing anything, the script requires:
 
 - the `KabraKunal/KunalKabra` GitHub remote;
-- the `main` branch tracking `origin/main`, freshly fetched with no ahead/behind commits;
+- a dated `codex/morning-intelligence-*` PR branch whose `HEAD` exactly equals
+  the supplied, freshly fetched `origin/main` base commit before publication;
 - a completely clean worktree and index;
 - a source workspace outside the public website repository;
 - a populated edition with all app sections and a parseable edition date;
@@ -67,19 +77,25 @@ tracked paths and removes its untracked generated files; it never stages or
 pushes the failed edition. Any unexpected path left by a failed build is kept for
 inspection rather than deleted silently.
 
-If the commit succeeds but the push fails, the local commit is intentionally
-retained. Resolve the authentication or remote issue, verify `git status`, and
-push it explicitly with:
+The publisher re-fetches `origin/main` after the build and immediately before
+branch push. If the base changed, it aborts rather than creating a stale-base PR.
+It also validates the complete base-to-commit diff against the same allowlist.
+
+If the commit succeeds but the branch push fails, the local commit is
+intentionally retained. Resolve authentication, verify `git status`, and push
+only that PR branch; never substitute `main`:
 
 ```powershell
-git push origin main
+git push --set-upstream origin HEAD
 ```
 
 ## Daily-flow integration
 
-Make the publisher the final step of the Daily Brief flow, after edition data and
-the OG image have passed their own review. Use `-Push` only for the scheduled
-production run; use the no-push form while testing changes to the flow.
+Make the publisher the branch-preparation step after edition data and the OG
+image have passed review. The caller must then open a PR against `main`, verify
+that the complete PR diff is confined to the allowlist, wait for required checks,
+merge, and separately verify the live GitHub Pages bundle. A pushed branch or
+open PR is not yet published.
 
 GitHub Actions runs the same app tests and build for relevant pull requests and
 pushes. It also verifies that the committed `intelligence/` bundle matches the app

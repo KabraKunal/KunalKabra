@@ -4,6 +4,10 @@ param(
     [ValidateNotNullOrEmpty()]
     [string]$SourcePath,
 
+    [Parameter(Mandatory = $true)]
+    [ValidatePattern('^[0-9a-fA-F]{40}$')]
+    [string]$ExpectedBaseCommit,
+
     [switch]$Push
 )
 
@@ -11,7 +15,8 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 $script:ExpectedRepository = "kabrakunal/kunalkabra"
-$script:ExpectedBranch = "main"
+$script:ExpectedBaseBranch = "main"
+$script:PublicationBranchPrefix = "codex/morning-intelligence-"
 $script:RepoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".."))
 $script:AllowedPublishPaths = @(
     "intelligence-app/src/data.ts",
@@ -20,6 +25,8 @@ $script:AllowedPublishPaths = @(
 )
 $script:MutationStarted = $false
 $script:Committed = $false
+$script:PublicationBranch = $null
+$script:BaseCommit = $null
 
 function Invoke-Git {
     param(
@@ -115,7 +122,7 @@ function Get-GitHubRepositorySlug {
     return $null
 }
 
-function Assert-CleanSynchronizedRepository {
+function Assert-CleanPublicationRepository {
     Get-Command git -ErrorAction Stop | Out-Null
 
     if (-not (Test-Path -LiteralPath (Join-Path $script:RepoRoot ".git"))) {
@@ -134,13 +141,8 @@ function Assert-CleanSynchronizedRepository {
     }
 
     $branch = (Invoke-Git -Arguments @("branch", "--show-current") | Select-Object -First 1).ToString().Trim()
-    if ($branch -ne $script:ExpectedBranch) {
-        throw "Refusing to publish from branch '$branch'. Check out '$script:ExpectedBranch' first."
-    }
-
-    $upstream = (Invoke-Git -Arguments @("rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{upstream}") | Select-Object -First 1).ToString().Trim()
-    if ($upstream -ne "origin/$script:ExpectedBranch") {
-        throw "Branch '$branch' must track origin/$script:ExpectedBranch; it currently tracks '$upstream'."
+    if (-not $branch.StartsWith($script:PublicationBranchPrefix, [System.StringComparison]::Ordinal)) {
+        throw "Refusing to publish from branch '$branch'. Daily publication must use a '$($script:PublicationBranchPrefix)*' PR branch."
     }
 
     $status = @(Invoke-Git -Arguments @("status", "--porcelain=v1", "--untracked-files=all"))
@@ -149,12 +151,26 @@ function Assert-CleanSynchronizedRepository {
         throw "The website repository must be completely clean before publishing.$([Environment]::NewLine)$detail"
     }
 
-    Invoke-Git -Arguments @("fetch", "--prune", "origin", $script:ExpectedBranch) | Out-Null
+    Invoke-Git -Arguments @("fetch", "--prune", "origin", $script:ExpectedBaseBranch) | Out-Null
 
-    $countsLine = (Invoke-Git -Arguments @("rev-list", "--left-right", "--count", "HEAD...origin/$script:ExpectedBranch") | Select-Object -First 1).ToString().Trim()
-    $counts = @($countsLine -split '\s+')
-    if ($counts.Count -ne 2 -or $counts[0] -ne "0" -or $counts[1] -ne "0") {
-        throw "Local $script:ExpectedBranch is not synchronized with origin/$script:ExpectedBranch (ahead/behind: $countsLine). Pull or push intentionally before publishing."
+    $remoteBase = (Invoke-Git -Arguments @("rev-parse", "origin/$script:ExpectedBaseBranch") | Select-Object -First 1).ToString().Trim()
+    $headCommit = (Invoke-Git -Arguments @("rev-parse", "HEAD") | Select-Object -First 1).ToString().Trim()
+    if ($remoteBase -ne $ExpectedBaseCommit.ToLowerInvariant()) {
+        throw "origin/$script:ExpectedBaseBranch moved after the PR branch was prepared. Expected $ExpectedBaseCommit but found $remoteBase. Recreate the branch from the latest main."
+    }
+    if ($headCommit -ne $remoteBase) {
+        throw "Publication branch '$branch' must start exactly at the latest origin/$script:ExpectedBaseBranch commit $remoteBase; found $headCommit."
+    }
+
+    $script:PublicationBranch = $branch
+    $script:BaseCommit = $remoteBase
+}
+
+function Assert-BaseBranchUnchanged {
+    Invoke-Git -Arguments @("fetch", "--prune", "origin", $script:ExpectedBaseBranch) | Out-Null
+    $currentBase = (Invoke-Git -Arguments @("rev-parse", "origin/$script:ExpectedBaseBranch") | Select-Object -First 1).ToString().Trim()
+    if ($currentBase -ne $script:BaseCommit) {
+        throw "origin/$script:ExpectedBaseBranch advanced from $($script:BaseCommit) to $currentBase during the build. Re-run from the latest main so unrelated site changes remain intact."
     }
 }
 
@@ -337,6 +353,20 @@ function Assert-OnlyAllowedChanges {
     return $changedPaths
 }
 
+function Assert-CommitDiffAllowlist {
+    $commitPaths = @(
+        Invoke-Git -Arguments @("diff", "--no-renames", "--name-only", "$($script:BaseCommit)...HEAD") |
+            ForEach-Object { $_.ToString().Trim() } |
+            Where-Object { $_.Length -gt 0 } |
+            Sort-Object -Unique
+    )
+    $unexpected = @($commitPaths | Where-Object { -not (Test-IsAllowedPublishPath -Path $_) })
+    if ($unexpected.Count -gt 0) {
+        throw "Publication commit changes paths outside the Intelligence allowlist:$([Environment]::NewLine)$($unexpected -join [Environment]::NewLine)"
+    }
+    return $commitPaths
+}
+
 function Assert-SafePublicBundle {
     param([Parameter(Mandatory = $true)][string]$OutputPath)
 
@@ -405,7 +435,7 @@ function Restore-PublishPaths {
 }
 
 try {
-    Assert-CleanSynchronizedRepository
+    Assert-CleanPublicationRepository
 
     $resolvedSource = (Resolve-Path -LiteralPath $SourcePath).Path
     if (-not (Test-Path -LiteralPath $resolvedSource -PathType Container)) {
@@ -427,6 +457,10 @@ try {
 
     $editionDate = Get-ValidatedEditionDate -DataPath $sourceData
     $editionIso = $editionDate.ToString("yyyy-MM-dd", [System.Globalization.CultureInfo]::InvariantCulture)
+    $requiredBranchPrefix = "$($script:PublicationBranchPrefix)$editionIso-"
+    if (-not $script:PublicationBranch.StartsWith($requiredBranchPrefix, [System.StringComparison]::Ordinal)) {
+        throw "Publication branch '$($script:PublicationBranch)' must begin with '$requiredBranchPrefix'."
+    }
     $indiaTimeZone = $null
     foreach ($timeZoneId in @("India Standard Time", "Asia/Kolkata")) {
         try {
@@ -490,6 +524,7 @@ try {
     }
 
     Assert-SafePublicBundle -OutputPath $outputRoot
+    Assert-BaseBranchUnchanged
     $changedPaths = @(Assert-OnlyAllowedChanges)
     if ($changedPaths.Count -eq 0) {
         Write-Host "Morning Intelligence $editionIso is already current; no commit or push was needed."
@@ -521,6 +556,7 @@ try {
     $commitMessage = "Publish Morning Intelligence: $editionIso"
     Invoke-Git -Arguments @("commit", "--message", $commitMessage) | ForEach-Object { Write-Host $_ }
     $script:Committed = $true
+    Assert-CommitDiffAllowlist | Out-Null
 
     $remainingStatus = @(Invoke-Git -Arguments @("status", "--porcelain=v1", "--untracked-files=all"))
     if ($remainingStatus.Count -gt 0) {
@@ -529,11 +565,14 @@ try {
 
     $commitSha = (Invoke-Git -Arguments @("rev-parse", "--short=12", "HEAD") | Select-Object -First 1).ToString().Trim()
     if ($Push) {
-        Invoke-Git -Arguments @("push", "--porcelain", "origin", "HEAD:refs/heads/main") | ForEach-Object { Write-Host $_ }
-        Write-Host "Published Morning Intelligence $editionIso in commit $commitSha and pushed origin/main."
+        Assert-BaseBranchUnchanged
+        Invoke-Git -Arguments @("push", "--porcelain", "--set-upstream", "origin", "HEAD:refs/heads/$($script:PublicationBranch)") | ForEach-Object { Write-Host $_ }
+        Write-Host "Prepared Morning Intelligence $editionIso in commit $commitSha and pushed PR branch origin/$($script:PublicationBranch)."
+        Write-Host "PULL_REQUEST_HEAD=$($script:PublicationBranch)"
+        Write-Host "PULL_REQUEST_BASE=$($script:ExpectedBaseBranch)"
     }
     else {
-        Write-Host "Created Morning Intelligence commit $commitSha for $editionIso. Push was not requested."
+        Write-Host "Created Morning Intelligence commit $commitSha for $editionIso on local PR branch $($script:PublicationBranch). Push was not requested."
     }
 }
 catch {
