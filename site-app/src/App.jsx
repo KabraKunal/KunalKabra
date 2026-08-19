@@ -351,15 +351,12 @@ function Hero() {
     <section className="home-hero" aria-labelledby="home-title">
       <div className="hero-copy">
         <h1 id="home-title">
-          A working notebook on <span className="accent-underline">strategy, systems, and durable growth.</span>
+          A working notebook on <span className="accent-underline">how technology holds together.</span>
         </h1>
         <p>
-          I use this site to think in public about technology, India’s industrial future, and how ideas become
-          execution.
+          I write about semiconductors, energy, manufacturing, AI, and the constraints that decide whether an idea
+          becomes a working system.
         </p>
-        <div className="path-line" aria-label="Personal path">
-          <span>Mechanical engineering</span><i>→</i><span>Energy systems</span><i>→</i><span>Strategy &amp; operations</span>
-        </div>
       </div>
       <figure className="portrait-note">
         <img
@@ -384,12 +381,8 @@ function BeliefsSection() {
         <h2 id="beliefs-heading" className="section-label">Working beliefs</h2>
         <blockquote>{beliefs[0]}</blockquote>
       </div>
-      <div className="belief-note">
-        <p>{beliefs[1]}</p>
-        <p>{beliefs[2]}</p>
-      </div>
-      <div className="belief-note">
-        <p>{beliefs[3]}</p>
+      <div className="belief-list">
+        {beliefs.slice(1).map((belief) => <p key={belief}>{belief}</p>)}
       </div>
     </section>
   );
@@ -516,13 +509,7 @@ function ReadingSection({ navigate }) {
         <div className="book-row-list">
           {featuredBooks.map((book, index) => (
             <AppLink href="/reading" navigate={navigate} className="book-row" key={book.id}>
-              <img
-                src={index === 0 ? "/assets/book-spine-green.png" : "/assets/book-spine-rust.png"}
-                alt=""
-                aria-hidden="true"
-                loading="lazy"
-                decoding="async"
-              />
+              <span className="book-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
               <span className="book-meta">
                 <strong>{book.title}</strong>
                 <small>{book.author}</small>
@@ -590,6 +577,20 @@ function SocialIcon({ type }) {
   return <InstagramLogo size={18} weight="regular" aria-hidden="true" />;
 }
 
+function SocialLinks({ showArrow = false }) {
+  return (
+    <div className="social-list">
+      {socialLinks.map((link) => (
+        <a key={link.label} href={link.href} target={link.type === "email" ? undefined : "_blank"} rel="noreferrer">
+          <SocialIcon type={link.type} />
+          <span>{link.label}</span>
+          {showArrow && <ArrowUpRight className="social-arrow" size={14} aria-hidden="true" />}
+        </a>
+      ))}
+    </div>
+  );
+}
+
 function ClosingSection({ navigate, onSearch, onHelp, theme, toggleTheme }) {
   return (
     <>
@@ -601,13 +602,7 @@ function ClosingSection({ navigate, onSearch, onHelp, theme, toggleTheme }) {
         </div>
         <div className="contact-block">
           <h2 className="section-label">Let’s connect</h2>
-          <div className="social-list">
-            {socialLinks.map((link) => (
-              <a key={link.label} href={link.href} target={link.type === "email" ? undefined : "_blank"} rel="noreferrer">
-                <SocialIcon type={link.type} /> {link.label}
-              </a>
-            ))}
-          </div>
+          <SocialLinks />
         </div>
       </section>
       <UtilitiesFooter navigate={navigate} onSearch={onSearch} onHelp={onHelp} theme={theme} toggleTheme={toggleTheme} />
@@ -912,7 +907,6 @@ function ReadingPage({ path, navigate, onSearch, onHelp, theme, toggleTheme }) {
           title="A shelf with the pencil marks left in."
           copy="Not everything I have read — just the books that changed how I think, and the sources I am actively learning from."
         />
-        <img className="reading-page-art" src="/assets/book-spines.png" alt="Abstract green and rust book-spine studies" loading="lazy" decoding="async" />
         {groups.map((group) => (
           <section className="reading-ledger" key={group}>
             <SectionLabel>{group === "Top pick" ? "Top picks" : "Current reads"}</SectionLabel>
@@ -999,10 +993,10 @@ function AboutPage({ path, navigate, onSearch, onHelp, theme, toggleTheme }) {
           />
           <div>
             <p className="about-lede">
-              I work where strategy meets execution, especially in complex, capital-intensive businesses.
+              I am interested in how complex systems work—and what it takes to build them well.
             </p>
             <p>I studied mechanical engineering at IIT Bombay, researched energy systems, and now advise companies at Bain on growth and operations.</p>
-            <p>I write here about technology, India’s industrial future, and building durable systems.</p>
+            <p>I write here about semiconductors, energy, manufacturing, AI, and India’s industrial future.</p>
           </div>
         </section>
         <section id="beliefs" className="about-beliefs" aria-labelledby="about-beliefs-heading">
@@ -1013,15 +1007,9 @@ function AboutPage({ path, navigate, onSearch, onHelp, theme, toggleTheme }) {
         <section className="about-contact about-contact-compact" aria-labelledby="about-contact-heading">
           <div className="about-contact-copy">
             <span id="about-contact-heading" className="section-label">Get in touch</span>
-            <p>If you’re building in industrials, manufacturing, or deep tech—or found something here worth discussing—I’d like to hear from you.</p>
+            <p>If something here is worth discussing, I’d like to hear from you.</p>
           </div>
-          <div className="social-list">
-            {socialLinks.map((link) => (
-              <a key={link.label} href={link.href} target={link.type === "email" ? undefined : "_blank"} rel="noreferrer">
-                <SocialIcon type={link.type} /> {link.label}<ArrowUpRight size={14} aria-hidden="true" />
-              </a>
-            ))}
-          </div>
+          <SocialLinks showArrow />
         </section>
         <PageFooter navigate={navigate} onSearch={onSearch} onHelp={onHelp} theme={theme} toggleTheme={toggleTheme} />
       </main>
