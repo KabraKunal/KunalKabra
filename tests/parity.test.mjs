@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { essays, searchItems } from "../site-app/src/content.js";
+import { beliefs, essays, searchItems } from "../site-app/src/content.js";
 
 const root = new URL("../", import.meta.url);
 const readText = (path) => readFile(new URL(path, root), "utf8");
@@ -104,6 +104,23 @@ test("keeps the notebook concise and orders Home chapters by the rendered page",
   assert.match(app, /I am interested in how complex systems work—and what it takes to build them well\./);
   assert.doesNotMatch(app, /I work where strategy meets execution/);
   assert.match(app, /className="belief-list"[\s\S]*?beliefs\.slice\(1\)/);
+  assert.equal(beliefs.length, 4);
+  assert.match(app, /<p className="belief-lead">\{beliefs\[0\]\}<\/p>/);
+  assert.doesNotMatch(home, /<blockquote>\{beliefs\[0\]\}<\/blockquote>/);
+  assert.match(styles, /\.home-beliefs \{[\s\S]*?max-width: calc\(var\(--content-max\) \+ \(var\(--page-gutter\) \* 2\)\);[\s\S]*?"label list"[\s\S]*?"lead list";/);
+  assert.match(styles, /\.home-beliefs \.belief-lead \{[\s\S]*?font-size: clamp\(18px, 1\.45vw, 22px\);/);
+  assert.doesNotMatch(styles, /\.home-beliefs \.belief-block blockquote::before/);
+  const tabletBeliefs = styles.slice(
+    styles.indexOf("@media (max-width: 1024px)"),
+    styles.indexOf("@media (max-width: 860px)"),
+  );
+  const narrowBeliefs = styles.slice(
+    styles.indexOf("@media (max-width: 860px)"),
+    styles.indexOf("@media (min-width: 761px)"),
+  );
+  assert.doesNotMatch(tabletBeliefs, /\.home-beliefs/);
+  assert.doesNotMatch(narrowBeliefs, /\.home-beliefs/);
+  assert.match(styles, /@media \(max-width: 760px\) \{[\s\S]*?\.home-beliefs \{[\s\S]*?"label"[\s\S]*?"lead"[\s\S]*?"list";/);
   assert.match(app, /function SocialLinks/);
   const socialStart = styles.indexOf(".social-list {");
   const socialStyles = styles.slice(socialStart, styles.indexOf(".utilities-footer", socialStart));

@@ -378,7 +378,7 @@ function BeliefsSection() {
     <section id="beliefs" className="closing-section home-beliefs" aria-labelledby="beliefs-heading">
       <h2 id="beliefs-heading" className="section-label">Working beliefs</h2>
       <div className="belief-block">
-        <blockquote>{beliefs[0]}</blockquote>
+        <p className="belief-lead">{beliefs[0]}</p>
       </div>
       <div className="belief-list">
         {beliefs.slice(1).map((belief) => <p key={belief}>{belief}</p>)}
