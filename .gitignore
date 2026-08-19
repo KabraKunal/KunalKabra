@@ -1,5 +1,6 @@
 # Dependency and framework caches
 **/node_modules/
+dist/
 intelligence-app/.next/
 intelligence-app/.vinext/
 intelligence-app/.vite/
@@ -7,6 +8,7 @@ intelligence-app/coverage/
 intelligence-app/dist/
 intelligence-app/tsconfig.tsbuildinfo
 .npm-cache/
+qa-evidence/
 
 # Local environment files and credentials
 .env
@@ -29,6 +31,8 @@ newspapers/
 **/newspapers/
 *.pdf
 *.PDF
+!public/assets/resume.pdf
+!assets/resume.pdf
 *.doc
 *.docx
 *.xls

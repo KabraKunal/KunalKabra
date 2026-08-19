@@ -2,7 +2,7 @@
 
 The public app lives at `/intelligence/`. Its maintainable source is in
 `intelligence-app/`, while the static bundle served by the website is committed
-under `intelligence/`.
+under root `intelligence/` for the existing branch-backed GitHub Pages setup.
 
 Daily publication deliberately copies only two artifacts from the private Daily
 Brief workspace:
@@ -49,6 +49,7 @@ Before changing anything, the script requires:
 - a completely clean worktree and index;
 - a source workspace outside the public website repository;
 - a populated edition with all app sections and a parseable edition date;
+- an edition date equal to the current calendar date in Asia/Kolkata;
 - a valid PNG social image and no placeholder or credential-like text.
 
 After copying the two allowed inputs, it runs `npm ci`, `npm test`, and

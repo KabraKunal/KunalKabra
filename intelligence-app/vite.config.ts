@@ -1,9 +1,23 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { readFileSync, writeFileSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const appRoot = path.dirname(fileURLToPath(import.meta.url));
+
+const normalizeGeneratedHtml = {
+  name: "normalize-generated-html",
+  closeBundle() {
+    const output = path.resolve(appRoot, "../intelligence/index.html");
+    const html = readFileSync(output, "utf8").replace(/\r+\n/g, "\n").replace(/\r/g, "\n");
+    writeFileSync(output, html, "utf8");
+  },
+};
 
 export default defineConfig({
   base: "/intelligence/",
-  plugins: [react()],
+  plugins: [react(), normalizeGeneratedHtml],
   build: {
     outDir: "../intelligence",
     emptyOutDir: true,
