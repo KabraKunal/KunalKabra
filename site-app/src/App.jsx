@@ -378,7 +378,7 @@ function BeliefsSection() {
     <section id="beliefs" className="closing-section home-beliefs" aria-labelledby="beliefs-heading">
       <h2 id="beliefs-heading" className="section-label">Working beliefs</h2>
       <div className="belief-block">
-        <blockquote>{beliefs[0]}</blockquote>
+        <p className="belief-lead">{beliefs[0]}</p>
       </div>
       <div className="belief-list">
         {beliefs.slice(1).map((belief) => <p key={belief}>{belief}</p>)}
@@ -458,6 +458,147 @@ function ProblemDisclosure({ problem, defaultOpen = false, compact = false }) {
   );
 }
 
+function SystemLoopDiagram() {
+  return (
+    <figure className="system-loop-figure">
+      <svg
+        className="system-loop-diagram"
+        viewBox="0 0 420 340"
+        role="img"
+        aria-labelledby="system-loop-title system-loop-description"
+        preserveAspectRatio="xMidYMid meet"
+        focusable="false"
+      >
+        <title id="system-loop-title">A reinforcing systems loop</title>
+        <desc id="system-loop-description">
+          Resources strengthen demand and capability, which strengthens manufacturing and scale, which creates more resources.
+        </desc>
+
+        <defs>
+          <marker
+            id="system-loop-arrowhead"
+            viewBox="0 0 12 12"
+            refX="10"
+            refY="6"
+            markerWidth="7"
+            markerHeight="7"
+            orient="auto"
+          >
+            <path className="loop-arrowhead" d="M 1 1 L 11 6 L 1 11" />
+          </marker>
+        </defs>
+
+        <g className="loop-connectors" aria-hidden="true">
+          <path
+            className="loop-connector"
+            d="M 274 75 C 339 104 366 166 346 212"
+            markerEnd="url(#system-loop-arrowhead)"
+            vectorEffect="non-scaling-stroke"
+          />
+          <path
+            className="loop-connector"
+            d="M 292 294 C 241 326 176 326 129 294"
+            markerEnd="url(#system-loop-arrowhead)"
+            vectorEffect="non-scaling-stroke"
+          />
+          <path
+            className="loop-connector"
+            d="M 70 212 C 51 158 83 99 144 75"
+            markerEnd="url(#system-loop-arrowhead)"
+            vectorEffect="non-scaling-stroke"
+          />
+        </g>
+
+        <g className="loop-motion" aria-hidden="true">
+          <g className="loop-moving-arrow">
+            <path d="M -9 -5 L 1 0 L -9 5" vectorEffect="non-scaling-stroke" />
+            <animate
+              attributeName="opacity"
+              values="0;1;1;0"
+              keyTimes="0;0.12;0.88;1"
+              dur="3.6s"
+              begin="-0.2s"
+              repeatCount="indefinite"
+            />
+            <animateMotion
+              path="M 274 75 C 339 104 366 166 346 212"
+              dur="3.6s"
+              begin="-0.2s"
+              repeatCount="indefinite"
+              rotate="auto"
+            />
+          </g>
+          <g className="loop-moving-arrow">
+            <path d="M -9 -5 L 1 0 L -9 5" vectorEffect="non-scaling-stroke" />
+            <animate
+              attributeName="opacity"
+              values="0;1;1;0"
+              keyTimes="0;0.12;0.88;1"
+              dur="3.6s"
+              begin="-1.4s"
+              repeatCount="indefinite"
+            />
+            <animateMotion
+              path="M 292 294 C 241 326 176 326 129 294"
+              dur="3.6s"
+              begin="-1.4s"
+              repeatCount="indefinite"
+              rotate="auto"
+            />
+          </g>
+          <g className="loop-moving-arrow">
+            <path d="M -9 -5 L 1 0 L -9 5" vectorEffect="non-scaling-stroke" />
+            <animate
+              attributeName="opacity"
+              values="0;1;1;0"
+              keyTimes="0;0.12;0.88;1"
+              dur="3.6s"
+              begin="-2.6s"
+              repeatCount="indefinite"
+            />
+            <animateMotion
+              path="M 70 212 C 51 158 83 99 144 75"
+              dur="3.6s"
+              begin="-2.6s"
+              repeatCount="indefinite"
+              rotate="auto"
+            />
+          </g>
+        </g>
+
+        <g className="loop-node loop-node-resources">
+          <ellipse cx="210" cy="55" rx="76" ry="38" vectorEffect="non-scaling-stroke" />
+          <text x="210" y="61" textAnchor="middle">Resources</text>
+        </g>
+
+        <g className="loop-node loop-node-manufacturing">
+          <ellipse cx="95" cy="258" rx="82" ry="49" vectorEffect="non-scaling-stroke" />
+          <text x="95" y="252" textAnchor="middle">
+            <tspan x="95">Manufacturing</tspan>
+            <tspan x="95" dy="20">&amp; scale</tspan>
+          </text>
+        </g>
+
+        <g className="loop-node loop-node-demand">
+          <ellipse cx="325" cy="258" rx="84" ry="49" vectorEffect="non-scaling-stroke" />
+          <text x="325" y="252" textAnchor="middle">
+            <tspan x="325">Demand &amp;</tspan>
+            <tspan x="325" dy="20">capability</tspan>
+          </text>
+        </g>
+
+        <g className="loop-center-label" aria-hidden="true">
+          <circle cx="210" cy="169" r="42" vectorEffect="non-scaling-stroke" />
+          <text x="210" y="165" textAnchor="middle">
+            <tspan x="210">Reinforcing</tspan>
+            <tspan x="210" dy="18">loop</tspan>
+          </text>
+        </g>
+      </svg>
+    </figure>
+  );
+}
+
 function QuestionsSection({ navigate }) {
   return (
     <section id="questions" className="notebook-section questions-section" aria-labelledby="questions-heading">
@@ -470,16 +611,7 @@ function QuestionsSection({ navigate }) {
             <ProblemDisclosure problem={problem} defaultOpen={index === 0} compact key={problem.slug} />
           ))}
         </div>
-        <figure className="system-loop-figure">
-          <img
-            src="/assets/system-loop.png"
-            alt="A reinforcing loop between resources, demand and capability, and manufacturing and scale"
-            width="560"
-            height="320"
-            loading="lazy"
-            decoding="async"
-          />
-        </figure>
+        <SystemLoopDiagram />
       </div>
     </section>
   );

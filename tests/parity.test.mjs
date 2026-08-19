@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { essays, searchItems } from "../site-app/src/content.js";
+import { beliefs, essays, searchItems } from "../site-app/src/content.js";
 
 const root = new URL("../", import.meta.url);
 const readText = (path) => readFile(new URL(path, root), "utf8");
@@ -104,6 +104,23 @@ test("keeps the notebook concise and orders Home chapters by the rendered page",
   assert.match(app, /I am interested in how complex systems work—and what it takes to build them well\./);
   assert.doesNotMatch(app, /I work where strategy meets execution/);
   assert.match(app, /className="belief-list"[\s\S]*?beliefs\.slice\(1\)/);
+  assert.equal(beliefs.length, 4);
+  assert.match(app, /<p className="belief-lead">\{beliefs\[0\]\}<\/p>/);
+  assert.doesNotMatch(home, /<blockquote>\{beliefs\[0\]\}<\/blockquote>/);
+  assert.match(styles, /\.home-beliefs \{[\s\S]*?max-width: calc\(var\(--content-max\) \+ \(var\(--page-gutter\) \* 2\)\);[\s\S]*?"label list"[\s\S]*?"lead list";/);
+  assert.match(styles, /\.home-beliefs \.belief-lead \{[\s\S]*?font-size: clamp\(18px, 1\.45vw, 22px\);/);
+  assert.doesNotMatch(styles, /\.home-beliefs \.belief-block blockquote::before/);
+  const tabletBeliefs = styles.slice(
+    styles.indexOf("@media (max-width: 1024px)"),
+    styles.indexOf("@media (max-width: 860px)"),
+  );
+  const narrowBeliefs = styles.slice(
+    styles.indexOf("@media (max-width: 860px)"),
+    styles.indexOf("@media (min-width: 761px)"),
+  );
+  assert.doesNotMatch(tabletBeliefs, /\.home-beliefs/);
+  assert.doesNotMatch(narrowBeliefs, /\.home-beliefs/);
+  assert.match(styles, /@media \(max-width: 760px\) \{[\s\S]*?\.home-beliefs \{[\s\S]*?"label"[\s\S]*?"lead"[\s\S]*?"list";/);
   assert.match(app, /function SocialLinks/);
   const socialStart = styles.indexOf(".social-list {");
   const socialStyles = styles.slice(socialStart, styles.indexOf(".utilities-footer", socialStart));
@@ -118,6 +135,24 @@ test("keeps the notebook concise and orders Home chapters by the rendered page",
   assert.ok(searchItems.some((item) => item.type === "Book" && item.href.startsWith("/reading#")));
   assert.ok(searchItems.some((item) => item.type === "Note" && item.href.startsWith("/notes#note-")));
   assert.ok(searchItems.some((item) => item.type === "Belief" && item.href === "/#beliefs"));
+});
+
+test("renders the reinforcing loop as responsive, accessible frontend geometry", async () => {
+  const [app, styles] = await Promise.all([
+    readText("site-app/src/App.jsx"),
+    readText("site-app/src/styles.css"),
+  ]);
+
+  assert.match(app, /function SystemLoopDiagram/);
+  assert.match(app, /viewBox="0 0 420 340"/);
+  assert.match(app, /aria-labelledby="system-loop-title system-loop-description"/);
+  assert.match(app, /Resources strengthen demand and capability/);
+  assert.equal((app.match(/<animateMotion/g) ?? []).length, 3);
+  assert.equal((app.match(/markerEnd="url\(#system-loop-arrowhead\)"/g) ?? []).length, 3);
+  assert.doesNotMatch(app, /system-loop\.png/);
+  assert.match(styles, /\.system-loop-diagram \{[\s\S]*?width: 100%;[\s\S]*?height: auto;[\s\S]*?aspect-ratio: 21 \/ 17;/);
+  assert.match(styles, /@media \(max-width: 1120px\) \{[\s\S]*?\.questions-layout \{[\s\S]*?grid-template-columns: 1fr;/);
+  assert.match(styles, /@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\.loop-motion \{[\s\S]*?display: none;/);
 });
 
 test("keeps legacy URLs as static redirects for branch-backed hosting", async () => {
