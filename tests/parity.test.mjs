@@ -135,6 +135,8 @@ test("keeps the notebook concise and orders Home chapters by the rendered page",
   assert.ok(searchItems.some((item) => item.type === "Book" && item.href.startsWith("/reading#")));
   assert.ok(searchItems.some((item) => item.type === "Note" && item.href.startsWith("/notes#note-")));
   assert.ok(searchItems.some((item) => item.type === "Belief" && item.href === "/#beliefs"));
+  assert.match(app, /className="problem-ledger-body" hidden=\{!open\}/);
+  assert.match(styles, /\[hidden\] \{\s*display: none !important;\s*\}/);
 });
 
 test("renders the reinforcing loop as responsive, accessible frontend geometry", async () => {
