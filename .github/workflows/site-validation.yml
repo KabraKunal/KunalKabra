@@ -1,0 +1,79 @@
+name: Site validation
+
+on:
+  pull_request:
+    paths:
+      - "site-app/**"
+      - "public/**"
+      - "tests/**"
+      - "scripts/prepare-pages.mjs"
+      - "scripts/export-pages.mjs"
+      - "scripts/verify-pages-export.mjs"
+      - "package.json"
+      - "package-lock.json"
+      - "vite.config.mjs"
+      - ".github/workflows/site-validation.yml"
+      - ".nojekyll"
+      - "404.html"
+      - "CNAME"
+      - "favicon.svg"
+      - "index.html"
+      - "robots.txt"
+      - "sitemap.xml"
+      - "about/**"
+      - "assets/**"
+      - "essays/**"
+      - "notes/**"
+      - "problems/**"
+      - "projects/**"
+      - "reading/**"
+      - "resume/**"
+      - "writing/**"
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Build and verify branch-root site
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Reject high-severity dependency advisories
+        run: npm audit --audit-level=high
+
+      - name: Build, test, and export Pages bundle
+        run: npm run validate:pages
+
+      - name: Verify committed Pages output is current
+        shell: bash
+        run: |
+          status="$(git status --porcelain --untracked-files=all -- \
+            .nojekyll 404.html CNAME favicon.svg index.html robots.txt sitemap.xml \
+            about assets essays notes problems projects reading resume writing)"
+          if [[ -n "$status" ]]; then
+            echo "Committed branch-root Pages output does not match site-app source:" >&2
+            echo "$status" >&2
+            exit 1
+          fi

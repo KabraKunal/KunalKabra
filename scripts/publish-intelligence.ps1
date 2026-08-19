@@ -427,6 +427,24 @@ try {
 
     $editionDate = Get-ValidatedEditionDate -DataPath $sourceData
     $editionIso = $editionDate.ToString("yyyy-MM-dd", [System.Globalization.CultureInfo]::InvariantCulture)
+    $indiaTimeZone = $null
+    foreach ($timeZoneId in @("India Standard Time", "Asia/Kolkata")) {
+        try {
+            $indiaTimeZone = [System.TimeZoneInfo]::FindSystemTimeZoneById($timeZoneId)
+            break
+        }
+        catch {
+            continue
+        }
+    }
+    if ($null -eq $indiaTimeZone) {
+        throw "Unable to resolve the India time zone on this system."
+    }
+    $todayInIndia = [System.TimeZoneInfo]::ConvertTimeFromUtc([System.DateTime]::UtcNow, $indiaTimeZone).Date
+    if ($editionDate.Date -ne $todayInIndia) {
+        $expectedIso = $todayInIndia.ToString("yyyy-MM-dd", [System.Globalization.CultureInfo]::InvariantCulture)
+        throw "Refusing to publish stale or future Intelligence content. Edition is $editionIso; today in India is $expectedIso."
+    }
     Assert-PngFile -Path $sourceOg
 
     $appRoot = Join-Path $script:RepoRoot "intelligence-app"
