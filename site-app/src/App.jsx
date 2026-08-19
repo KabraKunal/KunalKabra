@@ -44,7 +44,7 @@ const LEGACY_ROUTES = {
 };
 
 const ROUTE_METADATA = {
-  "/": ["Kunal Kabra — A working notebook", "Kunal Kabra's working notebook on strategy, technology, India's industrial future, and durable execution."],
+  "/": ["Kunal Kabra — A working notebook", "A working notebook on technology, strategy, industrial systems, and turning ideas into execution."],
   "/writing": ["Writing — Kunal Kabra", "Essays on business, technology, manufacturing, strategy, and philosophy."],
   "/problems": ["Problems — Kunal Kabra", "Open questions, constraints, and working hypotheses on rural productivity and energy independence."],
   "/notes": ["Learning notes — Kunal Kabra", "Working notes from what Kunal Kabra is studying and trying to understand."],
@@ -53,7 +53,7 @@ const ROUTE_METADATA = {
 };
 
 function getRouteMetadata(path) {
-  const essay = path.startsWith("/writing/") ? essays.find((item) => path.endsWith(item.slug)) : null;
+  const essay = essays.find((item) => path === `/writing/${item.slug}`);
   return essay
     ? [`${essay.title} — Kunal Kabra`, essay.excerpt]
     : ROUTE_METADATA[path] ?? ["Not found — Kunal Kabra", "The requested notebook page could not be found."];
@@ -98,6 +98,7 @@ function useRoute() {
     const nextPath = normalizePath(target.pathname);
     window.history.pushState({}, "", `${nextPath}${target.hash}`);
     setPath(nextPath);
+    window.dispatchEvent(new Event("hashchange"));
     requestAnimationFrame(() => {
       if (target.hash) {
         document.querySelector(target.hash)?.scrollIntoView({ block: "start" });
@@ -148,6 +149,7 @@ function useTheme() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#111722" : "#f7f7f5");
     window.localStorage.setItem("theme", theme);
     window.localStorage.setItem("kk-notebook-theme", theme);
   }, [theme]);
@@ -157,7 +159,7 @@ function useTheme() {
 
 function Header({ path, navigate, theme, toggleTheme, onSearch }) {
   const navItems = [
-    { label: "Writing", href: "/writing", active: path.startsWith("/writing") },
+    { label: "Writing", href: "/writing", active: path === "/writing" || essays.some((essay) => path === `/writing/${essay.slug}`) },
     { label: "Problems", href: "/problems", active: path === "/problems" },
     { label: "Reading", href: "/reading", active: path === "/reading" },
     { label: "About", href: "/about", active: path === "/about" },
@@ -203,10 +205,7 @@ function Header({ path, navigate, theme, toggleTheme, onSearch }) {
 }
 
 function ChapterRail({ chapters, activeId, navigate, isHome }) {
-  const currentIndex = Math.max(
-    0,
-    chapters.findIndex((chapter) => chapter.id === activeId),
-  );
+  const currentIndex = chapters.findIndex((chapter) => chapter.id === activeId);
 
   const handleChapter = (chapter) => {
     if (isHome) {
@@ -232,7 +231,7 @@ function ChapterRail({ chapters, activeId, navigate, isHome }) {
         </ol>
         <div className="rail-progress" aria-hidden="true">
           <span>You are here</span>
-          <strong>{String(currentIndex + 1).padStart(2, "0")} / 05</strong>
+          <strong>{currentIndex < 0 ? "— / 05" : `${String(currentIndex + 1).padStart(2, "0")} / 05`}</strong>
           <div>
             {chapters.map((chapter, index) => (
               <i key={chapter.id} className={index <= currentIndex ? "is-filled" : undefined} />
@@ -351,11 +350,11 @@ function Hero() {
     <section className="home-hero" aria-labelledby="home-title">
       <div className="hero-copy">
         <h1 id="home-title">
-          A working notebook on <span className="accent-underline">how technology holds together.</span>
+          A working notebook on <span className="accent-underline">what I’m learning and thinking through.</span>
         </h1>
         <p>
-          I write about semiconductors, energy, manufacturing, AI, and the constraints that decide whether an idea
-          becomes a working system.
+          I write about technology, strategy, and industrial systems—how they work, where they break, and what it
+          takes to turn an idea into execution.
         </p>
       </div>
       <figure className="portrait-note">
@@ -377,8 +376,8 @@ function Hero() {
 function BeliefsSection() {
   return (
     <section id="beliefs" className="closing-section home-beliefs" aria-labelledby="beliefs-heading">
+      <h2 id="beliefs-heading" className="section-label">Working beliefs</h2>
       <div className="belief-block">
-        <h2 id="beliefs-heading" className="section-label">Working beliefs</h2>
         <blockquote>{beliefs[0]}</blockquote>
       </div>
       <div className="belief-list">
@@ -472,7 +471,14 @@ function QuestionsSection({ navigate }) {
           ))}
         </div>
         <figure className="system-loop-figure">
-          <img src="/assets/system-loop.png" alt="A reinforcing loop between resources, demand and capability, and manufacturing and scale" loading="lazy" decoding="async" />
+          <img
+            src="/assets/system-loop.png"
+            alt="A reinforcing loop between resources, demand and capability, and manufacturing and scale"
+            width="560"
+            height="320"
+            loading="lazy"
+            decoding="async"
+          />
         </figure>
       </div>
     </section>
@@ -852,7 +858,25 @@ function EssayArticlePage({ essay, path, navigate, onSearch, onHelp, theme, togg
 }
 
 function ProblemsPage({ path, navigate, onSearch, onHelp, theme, toggleTheme }) {
-  const [openProblem, setOpenProblem] = useState(problems[0].slug);
+  const initialProblem = problems.find((problem) => problem.slug === window.location.hash.slice(1));
+  const [openProblem, setOpenProblem] = useState(initialProblem?.slug ?? problems[0].slug);
+
+  useEffect(() => {
+    const syncHash = () => {
+      const target = problems.find((problem) => problem.slug === window.location.hash.slice(1));
+      if (!target) return;
+      setOpenProblem(target.slug);
+      requestAnimationFrame(() => document.getElementById(target.slug)?.scrollIntoView({ block: "start" }));
+    };
+    syncHash();
+    window.addEventListener("hashchange", syncHash);
+    window.addEventListener("popstate", syncHash);
+    return () => {
+      window.removeEventListener("hashchange", syncHash);
+      window.removeEventListener("popstate", syncHash);
+    };
+  }, []);
+
   return (
     <NotebookShell path={path} navigate={navigate} theme={theme} toggleTheme={toggleTheme} onSearch={onSearch} activeId="questions">
       <main id="main-content" className="subpage-main" tabIndex="-1">
@@ -864,9 +888,15 @@ function ProblemsPage({ path, navigate, onSearch, onHelp, theme, toggleTheme }) 
         <section className="problem-ledger">
           {problems.map((problem) => {
             const open = openProblem === problem.slug;
+            const panelId = `${problem.slug}-panel`;
             return (
               <article id={problem.slug} className={open ? "is-open" : undefined} key={problem.slug}>
-                <button type="button" aria-expanded={open} onClick={() => setOpenProblem(open ? "" : problem.slug)}>
+                <button
+                  type="button"
+                  aria-expanded={open}
+                  aria-controls={panelId}
+                  onClick={() => setOpenProblem(open ? "" : problem.slug)}
+                >
                   <span>{problem.id}</span>
                   <span>
                     <small>{problem.status} · {problem.angle}</small>
@@ -875,8 +905,7 @@ function ProblemsPage({ path, navigate, onSearch, onHelp, theme, toggleTheme }) 
                   </span>
                   <CaretDown size={20} aria-hidden="true" />
                 </button>
-                {open && (
-                  <div className="problem-ledger-body">
+                <div id={panelId} className="problem-ledger-body" hidden={!open}>
                     <div><span className="detail-label">Why it matters</span><p>{problem.why}</p></div>
                     <div><span className="detail-label">Working hypothesis</span><p>{problem.hypothesis}</p></div>
                     <div><span className="detail-label">What I’m testing</span><p>{problem.testing}</p></div>
@@ -884,8 +913,7 @@ function ProblemsPage({ path, navigate, onSearch, onHelp, theme, toggleTheme }) 
                       <span className="detail-label">Constraints that shape the answer</span>
                       <ul>{problem.constraints.map((constraint) => <li key={constraint}>{constraint}</li>)}</ul>
                     </div>
-                  </div>
-                )}
+                </div>
               </article>
             );
           })}
@@ -897,8 +925,26 @@ function ProblemsPage({ path, navigate, onSearch, onHelp, theme, toggleTheme }) 
 }
 
 function ReadingPage({ path, navigate, onSearch, onHelp, theme, toggleTheme }) {
-  const [openBook, setOpenBook] = useState(books[0].id);
+  const initialBook = books.find((book) => book.id === window.location.hash.slice(1));
+  const [openBook, setOpenBook] = useState(initialBook?.id ?? books[0].id);
   const groups = ["Top pick", "Current read"];
+
+  useEffect(() => {
+    const syncHash = () => {
+      const target = books.find((book) => book.id === window.location.hash.slice(1));
+      if (!target) return;
+      setOpenBook(target.id);
+      requestAnimationFrame(() => document.getElementById(target.id)?.scrollIntoView({ block: "start" }));
+    };
+    syncHash();
+    window.addEventListener("hashchange", syncHash);
+    window.addEventListener("popstate", syncHash);
+    return () => {
+      window.removeEventListener("hashchange", syncHash);
+      window.removeEventListener("popstate", syncHash);
+    };
+  }, []);
+
   return (
     <NotebookShell path={path} navigate={navigate} theme={theme} toggleTheme={toggleTheme} onSearch={onSearch} activeId="reading">
       <main id="main-content" className="subpage-main" tabIndex="-1">
@@ -912,11 +958,13 @@ function ReadingPage({ path, navigate, onSearch, onHelp, theme, toggleTheme }) {
             <SectionLabel>{group === "Top pick" ? "Top picks" : "Current reads"}</SectionLabel>
             {books.filter((book) => book.group === group).map((book) => {
               const open = openBook === book.id;
+              const panelId = `${book.id}-detail`;
               return (
-                <article className={open ? "is-open" : undefined} key={book.id}>
+                <article id={book.id} className={open ? "is-open" : undefined} key={book.id}>
                   <button
                     type="button"
                     aria-expanded={open}
+                    aria-controls={panelId}
                     onClick={() => setOpenBook(open ? "" : book.id)}
                     onKeyDown={(event) => {
                       if (!["ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) return;
@@ -936,7 +984,7 @@ function ReadingPage({ path, navigate, onSearch, onHelp, theme, toggleTheme }) {
                     <span className="reading-preview">{book.takeaway}</span>
                     <CaretDown size={18} aria-hidden="true" />
                   </button>
-                  {open && <p>{book.detail}</p>}
+                  <p id={panelId} hidden={!open}>{book.detail}</p>
                 </article>
               );
             })}
@@ -1006,7 +1054,7 @@ function AboutPage({ path, navigate, onSearch, onHelp, theme, toggleTheme }) {
         </section>
         <section className="about-contact about-contact-compact" aria-labelledby="about-contact-heading">
           <div className="about-contact-copy">
-            <span id="about-contact-heading" className="section-label">Get in touch</span>
+            <h2 id="about-contact-heading" className="section-label">Get in touch</h2>
             <p>If something here is worth discussing, I’d like to hear from you.</p>
           </div>
           <SocialLinks showArrow />
@@ -1082,6 +1130,11 @@ function SearchPalette({ open, onClose, navigate }) {
           <input
             ref={inputRef}
             id="notebook-search"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="true"
+            aria-controls="notebook-search-results"
+            aria-activedescendant={results[activeIndex] ? `notebook-search-result-${activeIndex}` : undefined}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             onKeyDown={(event) => {
@@ -1109,10 +1162,14 @@ function SearchPalette({ open, onClose, navigate }) {
           />
           <button type="button" onClick={onClose} aria-label="Close search"><X size={19} aria-hidden="true" /></button>
         </div>
-        <div className="search-results">
+        <div id="notebook-search-results" className="search-results" role="listbox" aria-label="Search results">
           {results.length ? results.map((item, index) => (
             <button
               type="button"
+              id={`notebook-search-result-${index}`}
+              role="option"
+              aria-selected={index === activeIndex}
+              tabIndex={-1}
               key={`${item.type}-${item.title}`}
               className={index === activeIndex ? "is-active" : undefined}
               onMouseEnter={() => setActiveIndex(index)}
@@ -1398,9 +1455,8 @@ export function App() {
   else if (path === "/reading") page = <ReadingPage {...shared} />;
   else if (path === "/about") page = <AboutPage {...shared} />;
   else if (path === "/resume") page = <ResumeRedirect />;
-  else if (path.startsWith("/writing/")) {
-    const slug = path.split("/").filter(Boolean)[1];
-    const essay = essays.find((item) => item.slug === slug);
+  else if (/^\/writing\/[^/]+$/.test(path)) {
+    const essay = essays.find((item) => path === `/writing/${item.slug}`);
     page = essay ? <EssayArticlePage {...shared} essay={essay} /> : <NotFoundPage {...shared} />;
   } else page = <NotFoundPage {...shared} />;
 

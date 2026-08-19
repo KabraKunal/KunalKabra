@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#faf9f7" />
+    <meta name="theme-color" content="#f7f7f5" />
     <meta name="robots" content="index, follow" />
     <meta name="description" content="Semiconductors set the physical frontier. Durable product advantage comes from following the constraint—from power and memory to models, evaluations, and workflow." />
     <link rel="canonical" href="https://kunalkabra.com/writing/ai-stack-moving-bottleneck/" />
@@ -21,6 +21,7 @@
         var saved = localStorage.getItem("theme") || localStorage.getItem("kk-notebook-theme");
         var theme = saved || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
         document.documentElement.dataset.theme = theme;
+        document.querySelector('meta[name="theme-color"]').setAttribute("content", theme === "dark" ? "#111722" : "#f7f7f5");
       })();
     </script>
     <title>The AI Stack Is a Moving Bottleneck — Kunal Kabra</title>

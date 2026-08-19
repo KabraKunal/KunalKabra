@@ -3,27 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#faf9f7" />
+    <meta name="theme-color" content="#f7f7f5" />
     <meta name="robots" content="index, follow" />
     <meta
       name="description"
-      content="Kunal Kabra's working notebook on strategy, technology, India's industrial future, and durable execution."
+      content="A working notebook on technology, strategy, industrial systems, and turning ideas into execution."
     />
     <link rel="canonical" href="https://kunalkabra.com/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Kunal Kabra" />
     <meta property="og:title" content="Kunal Kabra — A working notebook" />
-    <meta property="og:description" content="Kunal Kabra's working notebook on strategy, technology, India's industrial future, and durable execution." />
+    <meta property="og:description" content="A working notebook on technology, strategy, industrial systems, and turning ideas into execution." />
     <meta property="og:url" content="https://kunalkabra.com/" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Kunal Kabra — A working notebook" />
-    <meta name="twitter:description" content="Kunal Kabra's working notebook on strategy, technology, India's industrial future, and durable execution." />
+    <meta name="twitter:description" content="A working notebook on technology, strategy, industrial systems, and turning ideas into execution." />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <script>
       (function () {
         var saved = localStorage.getItem("theme") || localStorage.getItem("kk-notebook-theme");
         var theme = saved || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
         document.documentElement.dataset.theme = theme;
+        document.querySelector('meta[name="theme-color"]').setAttribute("content", theme === "dark" ? "#111722" : "#f7f7f5");
       })();
     </script>
     <title>Kunal Kabra — A working notebook</title>

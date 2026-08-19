@@ -100,13 +100,23 @@ test("keeps the notebook concise and orders Home chapters by the rendered page",
   assert.ok(home.indexOf("<EssaysSection") < home.indexOf("<NotesSection"));
   assert.ok(home.indexOf("<NotesSection") < home.indexOf("<ReadingSection"));
   assert.doesNotMatch(app, /path-timeline|path-line|reading-page-art|book-spine-(green|rust)|Research ledger|Keep the argument, challenge the assumptions|How these pages evolve|How this archive grows|Later on this page|Margin note/);
-  assert.match(app, /A working notebook on <span className="accent-underline">how technology holds together\.<\/span>/);
+  assert.match(app, /A working notebook on <span className="accent-underline">what I’m learning and thinking through\.<\/span>/);
   assert.match(app, /I am interested in how complex systems work—and what it takes to build them well\./);
   assert.doesNotMatch(app, /I work where strategy meets execution/);
   assert.match(app, /className="belief-list"[\s\S]*?beliefs\.slice\(1\)/);
   assert.match(app, /function SocialLinks/);
-  assert.match(styles, /\.social-list \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+  const socialStart = styles.indexOf(".social-list {");
+  const socialStyles = styles.slice(socialStart, styles.indexOf(".utilities-footer", socialStart));
+  assert.match(socialStyles, /display: flex;[\s\S]*?flex-wrap: wrap;/);
+  assert.doesNotMatch(socialStyles, /nth-child|border:/);
   assert.match(app, /about-contact-compact/);
+  assert.match(app, /<h2 id="about-contact-heading" className="section-label">Get in touch<\/h2>/);
+  assert.match(app, /meta\[name="theme-color"\]/);
+  assert.match(app, /path === "\/writing" \|\| essays\.some\(\(essay\) => path === `\/writing\/\$\{essay\.slug\}`\)/);
+  assert.match(app, /\^\\\/writing\\\/\[\^\/\]\+\$/);
+  assert.match(app, /role="combobox"/);
+  assert.ok(searchItems.some((item) => item.type === "Book" && item.href.startsWith("/reading#")));
+  assert.ok(searchItems.some((item) => item.type === "Note" && item.href.startsWith("/notes#note-")));
   assert.ok(searchItems.some((item) => item.type === "Belief" && item.href === "/#beliefs"));
 });
 
