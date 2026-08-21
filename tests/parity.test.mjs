@@ -55,34 +55,37 @@ test("keeps local Morning Intelligence and legacy route parity", async () => {
   assert.match(sitemap, /https:\/\/kunalkabra\.com\/intelligence\//);
 });
 
-test("publishes two researched strategic essays without crowding the homepage", async () => {
-  const [app, sitemap] = await Promise.all([
+test("publishes only the three established short essays", async () => {
+  const [app, content, sitemap] = await Promise.all([
     readText("site-app/src/App.jsx"),
+    readText("site-app/src/content.js"),
     readText("public/sitemap.xml"),
   ]);
-  const additions = essays.filter((essay) => [
+  const removedSlugs = [
     "costs-that-build-the-company",
     "ai-stack-moving-bottleneck",
-  ].includes(essay.slug));
+  ];
 
-  assert.equal(essays.length, 5);
-  assert.equal(additions.length, 2);
-  assert.equal(essays.filter((essay) => essay.featured).length, 3);
-  const expectedReadTimes = new Map([
-    ["costs-that-build-the-company", "8 min read"],
-    ["ai-stack-moving-bottleneck", "11 min read"],
+  assert.deepEqual(essays.map((essay) => essay.slug), [
+    "why-moats-matter",
+    "last-mile-manufacturing",
+    "agency-and-leverage",
   ]);
-  for (const essay of additions) {
-    assert.equal(essay.date, "19 Aug 2026");
-    assert.ok(essay.sections.length >= 8);
-    assert.ok(essay.sources.length >= 7);
-    assert.equal(essay.readTime, expectedReadTimes.get(essay.slug));
+  assert.equal(essays.filter((essay) => essay.featured).length, 3);
+  for (const essay of essays) {
+    assert.equal(essay.readTime, "2 min read");
     assert.ok(searchItems.some((item) => item.href === `/writing/${essay.slug}`));
     assert.match(sitemap, new RegExp(`https:\/\/kunalkabra\\.com\/writing\/${essay.slug}`));
   }
+  for (const slug of removedSlugs) {
+    assert.ok(!essays.some((essay) => essay.slug === slug));
+    assert.ok(!searchItems.some((item) => item.href === `/writing/${slug}`));
+    assert.doesNotMatch(content, new RegExp(slug));
+    assert.doesNotMatch(sitemap, new RegExp(slug));
+  }
   assert.doesNotMatch(app, /id="source-notes"|article-sources/);
-  assert.match(app, /id: "operations", label: "Operations"/);
-  assert.match(app, /id: "technology", label: "Technology"/);
+  assert.doesNotMatch(app, /id: "operations", label: "Operations"/);
+  assert.doesNotMatch(app, /id: "technology", label: "Technology"/);
 });
 
 test("keeps the notebook concise and orders Home chapters by the rendered page", async () => {
