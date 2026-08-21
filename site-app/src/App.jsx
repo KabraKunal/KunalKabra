@@ -845,8 +845,6 @@ function WritingPage({ path, navigate, onSearch, onHelp, theme, toggleTheme }) {
   const filters = [
     { id: "all", label: "All writing" },
     { id: "strategy", label: "Strategy" },
-    { id: "operations", label: "Operations" },
-    { id: "technology", label: "Technology" },
     { id: "manufacturing", label: "Manufacturing" },
     { id: "philosophy", label: "Philosophy" },
   ];
